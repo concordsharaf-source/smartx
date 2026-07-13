@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Smart X - إدارة الأعضاء</title>
+<title>Smart X - لوحة المدير</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -33,11 +33,11 @@ font-family:'Cairo',sans-serif;
 }
 
 body{
-background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
+background:#0b1120;
 }
 
 .glass{
-background:rgba(255,255,255,.1);
+background:rgba(255,255,255,.08);
 backdrop-filter:blur(15px);
 border:1px solid rgba(255,255,255,.1);
 }
@@ -55,15 +55,15 @@ background:linear-gradient(135deg,#e94560,#ff6b6b);
 <body class="text-white min-h-screen">
 
 
-<header class="glass p-5 flex justify-between items-center">
 
+<header class="glass p-5 flex justify-between items-center">
 
 <h1 class="text-3xl font-black">
 Smart <span class="text-gold">X</span>
 </h1>
 
 
-<button onclick="logout()" class="text-red-300">
+<button onclick="logout()" class="text-red-400">
 خروج
 </button>
 
@@ -78,72 +78,70 @@ Smart <span class="text-gold">X</span>
 
 
 <h2 class="text-3xl font-bold mb-6">
-لوحة المدير 👑
+👑 لوحة الإدارة
 </h2>
 
 
 
 
 
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+<!-- الإحصائيات -->
 
 
-<div class="glass rounded-2xl p-5">
-<p class="text-gray-400">عدد الأعضاء</p>
-<h2 id="count" class="text-3xl font-bold">
+<div class="grid md:grid-cols-4 grid-cols-2 gap-4 mb-8">
+
+
+<div class="glass rounded-3xl p-5">
+<p class="text-gray-400">الأعضاء</p>
+<h2 id="usersCount" class="text-3xl font-bold">0</h2>
+</div>
+
+
+<div class="glass rounded-3xl p-5">
+<p class="text-gray-400">الأرصدة</p>
+<h2 id="totalMoney" class="text-3xl font-bold text-success">
+0$
+</h2>
+</div>
+
+
+<div class="glass rounded-3xl p-5">
+<p class="text-gray-400">إيداعات معلقة</p>
+<h2 id="depositCount" class="text-3xl font-bold text-gold">
 0
 </h2>
 </div>
 
 
-
-<div class="glass rounded-2xl p-5">
-<p class="text-gray-400">إجمالي الأرصدة</p>
-<h2 id="money" class="text-3xl font-bold text-success">
-0 $
-</h2>
-</div>
-
-
-
-<div class="glass rounded-2xl p-5">
-<p class="text-gray-400">إجمالي النقاط</p>
-<h2 id="pointsTotal" class="text-3xl font-bold text-gold">
+<div class="glass rounded-3xl p-5">
+<p class="text-gray-400">سحوبات معلقة</p>
+<h2 id="withdrawCount" class="text-3xl font-bold">
 0
 </h2>
 </div>
 
 
+</div>
 
-<div class="glass rounded-2xl p-5">
-<p class="text-gray-400">الحالة</p>
-<h2 class="text-3xl">
-نشط
+
+
+
+
+
+
+<!-- الأعضاء -->
+
+
+<div class="glass rounded-3xl p-6 mb-8">
+
+
+<h2 class="text-2xl font-bold mb-5">
+👥 الأعضاء
 </h2>
-</div>
-
-
-</div>
 
 
 
-
-
-
-
-<input
-id="search"
-onkeyup="showUsers()"
-placeholder="🔍 ابحث باسم المستخدم أو الهاتف"
-class="w-full p-4 mb-6 rounded-xl bg-white/10">
-
-
-
-
-
-
-
-<div class="glass rounded-3xl p-5 overflow-x-auto">
+<div class="overflow-x-auto">
 
 
 <table class="w-full text-center">
@@ -154,15 +152,9 @@ class="w-full p-4 mb-6 rounded-xl bg-white/10">
 <tr class="border-b border-white/20">
 
 <th class="p-3">الاسم</th>
-
 <th>الهاتف</th>
-
-<th>البريد</th>
-
 <th>الرصيد</th>
-
 <th>النقاط</th>
-
 <th>التحكم</th>
 
 </tr>
@@ -181,8 +173,63 @@ class="w-full p-4 mb-6 rounded-xl bg-white/10">
 </div>
 
 
+</div>
+
+
+
+
+
+
+
+
+
+<!-- الإيداعات -->
+
+
+<div class="glass rounded-3xl p-6 mb-8">
+
+
+<h2 class="text-2xl font-bold mb-5">
+📥 طلبات الإيداع
+</h2>
+
+
+<div id="deposits"></div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- السحوبات -->
+
+
+<div class="glass rounded-3xl p-6">
+
+
+<h2 class="text-2xl font-bold mb-5">
+📤 طلبات السحب
+</h2>
+
+
+<div id="withdrawals"></div>
+
+
+</div>
+
+
+
+
+
 
 </main>
+
+
 
 
 
@@ -193,136 +240,83 @@ class="w-full p-4 mb-6 rounded-xl bg-white/10">
 <script>
 
 
+
 let users =
 JSON.parse(localStorage.getItem("smartUsers")) || [];
 
 
+let deposits =
+JSON.parse(localStorage.getItem("deposits")) || [];
+
+
+let withdrawals =
+JSON.parse(localStorage.getItem("withdrawals")) || [];
 
 
 
 
-function showUsers(){
 
 
 
-let table =
-document.getElementById("usersTable");
+function load(){
+
+
+
+let table=document.getElementById("usersTable");
 
 table.innerHTML="";
 
-
-
-let search =
-document.getElementById("search").value.toLowerCase();
+let money=0;
 
 
 
+users.forEach((u,i)=>{
 
 
-let totalMoney=0;
-
-let totalPoints=0;
-
-
+money+=Number(u.balance);
 
 
 
-
-users
-.filter(user=>
-
-user.name.toLowerCase().includes(search)
-||
-user.username.toLowerCase().includes(search)
-||
-user.phone.includes(search)
-
-)
-
-.forEach((user,index)=>{
-
-
-
-totalMoney += Number(user.balance);
-
-totalPoints += Number(user.points);
-
-
-
-
-
-table.innerHTML += `
+table.innerHTML+=`
 
 <tr class="border-b border-white/10">
 
-
 <td class="p-3">
-
-${user.name}
-
+${u.name}
 <br>
-
-<span class="text-gray-400 text-sm">
-
-${user.username}
-
+<span class="text-gray-400">
+${u.username}
 </span>
-
 </td>
 
 
 <td>
-
-${user.phone}
-
-</td>
-
-
-<td>
-
-${user.email}
-
+${u.phone}
 </td>
 
 
 <td class="text-success">
-
-${user.balance}$
-
+${u.balance}$
 </td>
 
 
 <td class="text-gold">
-
-${user.points}
-
+${u.points}
 </td>
-
 
 
 <td>
 
 
-<button
-
-onclick="addMoney(${index})"
-
-class="bg-green-600 px-3 py-2 rounded-lg m-1">
-
+<button onclick="addBalance(${i})"
+class="bg-green-600 px-3 py-2 rounded-xl">
 + رصيد
-
 </button>
 
 
-
-<button
-
-onclick="addPoints(${index})"
-
-class="bg-yellow-600 px-3 py-2 rounded-lg m-1">
-
+<button onclick="addPoints(${i})"
+class="bg-yellow-600 px-3 py-2 rounded-xl">
 + نقاط
-
 </button>
 
 
@@ -333,21 +327,28 @@ class="bg-yellow-600 px-3 py-2 rounded-lg m-1">
 
 `;
 
-
-
 });
 
 
+document.getElementById("usersCount").innerHTML=users.length;
+
+document.getElementById("totalMoney").innerHTML=money+"$";
+
+
+document.getElementById("depositCount").innerHTML=
+
+deposits.filter(x=>x.status=="قيد المراجعة").length;
+
+
+document.getElementById("withdrawCount").innerHTML=
+
+withdrawals.filter(x=>x.status=="قيد المراجعة").length;
 
 
 
+showDeposits();
 
-document.getElementById("count").innerHTML=users.length;
-
-document.getElementById("money").innerHTML=totalMoney+" $";
-
-document.getElementById("pointsTotal").innerHTML=totalPoints;
-
+showWithdrawals();
 
 
 }
@@ -357,26 +358,20 @@ document.getElementById("pointsTotal").innerHTML=totalPoints;
 
 
 
-function addMoney(index){
 
 
-
-let amount =
-prompt("أدخل مبلغ الإضافة");
+function addBalance(i){
 
 
+let x=prompt("المبلغ");
 
-if(amount && amount>0){
 
+if(x){
 
-users[index].balance += Number(amount);
-
+users[i].balance+=Number(x);
 
 save();
 
-
-alert("تم إضافة الرصيد");
-
 }
 
 
@@ -387,26 +382,17 @@ alert("تم إضافة الرصيد");
 
 
 
-
-function addPoints(index){
-
+function addPoints(i){
 
 
-let points =
-prompt("أدخل عدد النقاط");
+let x=prompt("النقاط");
 
 
+if(x){
 
-if(points && points>0){
-
-
-users[index].points += Number(points);
-
+users[i].points+=Number(x);
 
 save();
-
-
-alert("تم إضافة النقاط");
 
 }
 
@@ -421,21 +407,219 @@ alert("تم إضافة النقاط");
 
 function save(){
 
-
 localStorage.setItem(
-
 "smartUsers",
-
 JSON.stringify(users)
-
 );
 
+load();
 
-showUsers();
+}
+
+
+
+
+
+
+
+
+
+function showDeposits(){
+
+
+let box=document.getElementById("deposits");
+
+box.innerHTML="";
+
+
+deposits.forEach((d,i)=>{
+
+
+box.innerHTML+=`
+
+<div class="glass p-4 rounded-xl mb-3">
+
+المبلغ:
+${d.amount}$
+
+<br>
+
+الطريقة:
+${d.method}
+
+
+<br>
+
+الحالة:
+${d.status}
+
+
+<br><br>
+
+
+<button onclick="acceptDeposit(${i})"
+class="bg-green-600 px-4 py-2 rounded-xl">
+قبول
+</button>
+
+
+<button onclick="rejectDeposit(${i})"
+class="bg-red-600 px-4 py-2 rounded-xl">
+رفض
+</button>
+
+
+</div>
+
+`;
+
+});
 
 
 }
 
+
+
+
+
+
+
+
+
+function acceptDeposit(i){
+
+
+deposits[i].status="مقبول";
+
+
+saveAll();
+
+
+}
+
+
+
+
+
+
+
+function rejectDeposit(i){
+
+
+deposits[i].status="مرفوض";
+
+
+saveAll();
+
+
+}
+
+
+
+
+
+
+
+
+function showWithdrawals(){
+
+
+let box=document.getElementById("withdrawals");
+
+box.innerHTML="";
+
+
+withdrawals.forEach((w,i)=>{
+
+
+box.innerHTML+=`
+
+<div class="glass p-4 rounded-xl mb-3">
+
+
+المبلغ:
+${w.amount}$
+
+<br>
+
+طريقة:
+${w.method}
+
+
+<br>
+
+الحالة:
+${w.status}
+
+
+<br><br>
+
+
+<button onclick="acceptWithdraw(${i})"
+class="bg-green-600 px-4 py-2 rounded-xl">
+قبول
+</button>
+
+
+<button onclick="rejectWithdraw(${i})"
+class="bg-red-600 px-4 py-2 rounded-xl">
+رفض
+</button>
+
+
+</div>
+
+
+`;
+
+});
+
+
+}
+
+
+
+
+
+
+
+function acceptWithdraw(i){
+
+withdrawals[i].status="مقبول";
+
+saveAll();
+
+}
+
+
+
+
+function rejectWithdraw(i){
+
+withdrawals[i].status="مرفوض";
+
+saveAll();
+
+}
+
+
+
+
+
+
+
+function saveAll(){
+
+
+localStorage.setItem("deposits",JSON.stringify(deposits));
+
+localStorage.setItem("withdrawals",JSON.stringify(withdrawals));
+
+
+load();
+
+
+}
 
 
 
@@ -450,9 +634,8 @@ window.location="index.html";
 
 
 
+load();
 
-
-showUsers();
 
 
 </script>
