@@ -40,24 +40,23 @@ background:linear-gradient(135deg,#e94560,#ff6b6b);
 <body class="text-white min-h-screen">
 
 
-<header class="glass p-5 flex justify-between">
+<header class="glass p-5 flex justify-between items-center">
 
 <h1 class="text-3xl font-black">
 Smart <span class="text-red-400">X</span>
 </h1>
 
-
 <button onclick="logout()" class="text-red-300">
 خروج
 </button>
-
 
 </header>
 
 
 
 
-<main class="max-w-6xl mx-auto p-5">
+
+<main class="max-w-7xl mx-auto p-5">
 
 
 <h2 class="text-3xl font-bold mb-6">
@@ -65,15 +64,34 @@ Smart <span class="text-red-400">X</span>
 </h2>
 
 
-<div id="status" class="mb-5 text-yellow-300">
-جاري تحميل البيانات...
+
+<h2 class="text-2xl font-bold mb-4">
+طلبات الإيداع 💰
+</h2>
+
+
+<div id="deposits" class="space-y-4 mb-10">
+
 </div>
 
 
-<div id="users" class="space-y-5"></div>
+
+
+
+<h2 class="text-2xl font-bold mb-4">
+الأعضاء 👥
+</h2>
+
+
+<div id="users" class="space-y-5">
+
+</div>
+
 
 
 </main>
+
+
 
 
 
@@ -83,6 +101,7 @@ Smart <span class="text-red-400">X</span>
 
 
 import {auth,db} from "./firebase.js";
+
 
 
 import {
@@ -114,12 +133,14 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
-onAuthStateChanged(auth, async(user)=>{
+
+
+onAuthStateChanged(auth,async(user)=>{
 
 
 if(!user){
 
-document.getElementById("status").innerHTML="لم يتم تسجيل الدخول";
+location="login.html";
 
 return;
 
@@ -127,33 +148,17 @@ return;
 
 
 
-try{
+let admin=await getDoc(
 
-
-let adminDoc = await getDoc(
 doc(db,"users",user.uid)
+
 );
 
 
 
-if(!adminDoc.exists()){
+if(!admin.exists() || admin.data().role!="admin"){
 
-document.getElementById("status").innerHTML="بيانات الحساب غير موجودة";
-
-return;
-
-}
-
-
-
-let adminData = adminDoc.data();
-
-
-
-if(adminData.role !== "admin"){
-
-
-document.getElementById("status").innerHTML="ليس لديك صلاحية مدير";
+location="dashboard.html";
 
 return;
 
@@ -161,27 +166,208 @@ return;
 
 
 
-document.getElementById("status").innerHTML="تم الدخول كمدير";
-
+loadDeposits();
 
 loadUsers();
 
 
 
+});
+
+
+
+
+
+
+
+
+
+async function loadDeposits(){
+
+
+let box=document.getElementById("deposits");
+
+
+box.innerHTML="";
+
+
+
+let snap=await getDocs(
+
+collection(db,"deposits")
+
+);
+
+
+
+snap.forEach((item)=>{
+
+
+let d=item.data();
+
+
+if(d.status=="pending"){
+
+
+
+box.innerHTML += `
+
+
+<div class="glass rounded-3xl p-5">
+
+
+<h3 class="text-xl font-bold">
+
+${d.name}
+
+</h3>
+
+
+<p>
+💰 المبلغ: ${d.amount}
+</p>
+
+
+<p>
+🏦 الطريقة: ${d.method}
+</p>
+
+
+<p>
+📝 ${d.note || ""}
+</p>
+
+
+
+<div class="flex gap-3 mt-4">
+
+
+<button
+
+onclick="approveDeposit('${item.id}','${d.userId}',${d.amount})"
+
+class="bg-green-600 p-3 rounded-xl">
+
+قبول
+
+</button>
+
+
+
+<button
+
+onclick="rejectDeposit('${item.id}')"
+
+class="bg-red-600 p-3 rounded-xl">
+
+رفض
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+`;
+
 }
-
-
-catch(error){
-
-
-document.getElementById("status").innerHTML=error.message;
-
-
-}
-
 
 
 });
+
+
+
+}
+
+
+
+
+
+
+
+
+
+window.approveDeposit=async function(id,userId,amount){
+
+
+
+let userRef=doc(db,"users",userId);
+
+
+let userSnap=await getDoc(userRef);
+
+
+let old=userSnap.data().balance || 0;
+
+
+
+await updateDoc(userRef,{
+
+balance:old+amount
+
+});
+
+
+
+await updateDoc(
+
+doc(db,"deposits",id),
+
+{
+
+status:"approved"
+
+}
+
+);
+
+
+
+alert("تم قبول الإيداع");
+
+
+loadDeposits();
+
+
+}
+
+
+
+
+
+
+
+
+
+
+window.rejectDeposit=async function(id){
+
+
+await updateDoc(
+
+doc(db,"deposits",id),
+
+{
+
+status:"rejected"
+
+}
+
+);
+
+
+
+alert("تم رفض الطلب");
+
+
+loadDeposits();
+
+
+
+}
 
 
 
@@ -200,89 +386,50 @@ let box=document.getElementById("users");
 box.innerHTML="";
 
 
-let result = await getDocs(
+let snap=await getDocs(
+
 collection(db,"users")
+
 );
 
 
 
-result.forEach((item)=>{
+snap.forEach((item)=>{
 
 
 let u=item.data();
-
-let id=item.id;
-
 
 
 box.innerHTML += `
 
 
-<div class="glass rounded-3xl p-6">
+<div class="glass rounded-3xl p-5">
 
 
-<h2 class="text-2xl font-bold">
-${u.name || "بدون اسم"}
+<h2 class="text-xl font-bold">
+
+${u.name || ""}
+
 </h2>
 
 
-<p class="mt-2">
+<p>
 📧 ${u.email || ""}
 </p>
 
 
-<p>
-📱 ${u.phone || ""}
-</p>
-
-
 <p class="text-green-400">
+
 💰 الرصيد: ${u.balance || 0}
+
 </p>
 
 
 <p class="text-yellow-400">
+
 ⭐ النقاط: ${u.points || 0}
+
 </p>
-
-
-
-<div class="grid gap-3 mt-5">
-
-
-<input id="balance-${id}"
-type="number"
-placeholder="إضافة رصيد"
-class="p-3 rounded-xl bg-white/10">
-
-
-
-<button onclick="addBalance('${id}')"
-class="gold p-3 rounded-xl font-bold">
-
-إضافة رصيد
-
-</button>
-
-
-
-
-<input id="points-${id}"
-type="number"
-placeholder="إضافة نقاط"
-class="p-3 rounded-xl bg-white/10">
-
-
-
-<button onclick="addPoints('${id}')"
-class="gold p-3 rounded-xl font-bold">
-
-إضافة نقاط
-
-</button>
-
-
-</div>
 
 
 </div>
@@ -304,80 +451,6 @@ class="gold p-3 rounded-xl font-bold">
 
 
 
-window.addBalance=async function(id){
-
-
-let value=Number(
-document.getElementById("balance-"+id).value
-);
-
-
-
-if(value<=0)return;
-
-
-
-let ref=doc(db,"users",id);
-
-let snap=await getDoc(ref);
-
-
-await updateDoc(ref,{
-
-balance:(snap.data().balance || 0)+value
-
-});
-
-
-loadUsers();
-
-
-}
-
-
-
-
-
-
-
-
-window.addPoints=async function(id){
-
-
-let value=Number(
-document.getElementById("points-"+id).value
-);
-
-
-
-if(value<=0)return;
-
-
-
-let ref=doc(db,"users",id);
-
-let snap=await getDoc(ref);
-
-
-
-await updateDoc(ref,{
-
-points:(snap.data().points || 0)+value
-
-});
-
-
-loadUsers();
-
-
-}
-
-
-
-
-
-
-
 
 window.logout=function(){
 
@@ -389,6 +462,7 @@ location="login.html";
 
 
 }
+
 
 
 </script>
