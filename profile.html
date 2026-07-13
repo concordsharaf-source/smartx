@@ -29,16 +29,16 @@ border:1px solid rgba(255,255,255,.15);
 }
 
 .locked{
-background:rgba(255,255,255,.04);
+background:rgba(255,255,255,.05);
 color:#a1a1aa;
 }
 
-.avatar{
+.avatar-circle{
 cursor:pointer;
-transition:.25s;
+transition:.3s;
 }
 
-.avatar:hover{
+.avatar-circle:hover{
 transform:scale(1.08);
 }
 
@@ -60,11 +60,9 @@ justify-content:center;
 
 background:#111827;
 width:90%;
-max-width:450px;
+max-width:420px;
 border-radius:25px;
 padding:20px;
-max-height:85vh;
-overflow:auto;
 
 }
 
@@ -74,11 +72,13 @@ overflow:auto;
 </head>
 
 
+
 <body class="text-white min-h-screen">
 
 
 
 <header class="glass p-5 flex justify-between items-center">
+
 
 <h1 class="text-3xl font-black">
 Smart <span class="text-red-400">X</span>
@@ -96,7 +96,6 @@ Smart <span class="text-red-400">X</span>
 
 
 
-
 <main class="max-w-md mx-auto p-5">
 
 
@@ -107,9 +106,7 @@ Smart <span class="text-red-400">X</span>
 
 
 
-
 <div class="glass rounded-3xl p-6">
-
 
 
 
@@ -118,18 +115,21 @@ Smart <span class="text-red-400">X</span>
 <div class="text-center mb-6">
 
 
-<img id="mainAvatar"
+<div id="mainAvatar"
 
 onclick="openAvatarBox()"
 
-class="w-32 h-32 rounded-full mx-auto object-cover bg-white p-1 avatar">
+class="w-32 h-32 rounded-full mx-auto bg-white/20 flex items-center justify-center text-6xl avatar-circle">
+
+👤
+
+</div>
 
 
 
-<p class="mt-3 text-gray-300">
+<p class="text-gray-300 mt-3">
 اضغط لتغيير الصورة
 </p>
-
 
 
 </div>
@@ -139,11 +139,7 @@ class="w-32 h-32 rounded-full mx-auto object-cover bg-white p-1 avatar">
 
 
 
-
-<label>
-الاسم الكامل
-</label>
-
+<label>الاسم الكامل</label>
 
 <input id="name"
 
@@ -154,11 +150,7 @@ class="w-full p-4 mt-2 mb-4 rounded-xl bg-white/10">
 
 
 
-
-<label>
-اسم المستخدم
-</label>
-
+<label>اسم المستخدم</label>
 
 <input id="username"
 
@@ -169,11 +161,7 @@ class="w-full p-4 mt-2 mb-4 rounded-xl bg-white/10">
 
 
 
-
-<label>
-رقم الهاتف
-</label>
-
+<label>رقم الهاتف</label>
 
 <input id="phone"
 
@@ -184,11 +172,7 @@ class="w-full p-4 mt-2 mb-4 rounded-xl bg-white/10">
 
 
 
-
-<label>
-الدولة
-</label>
-
+<label>الدولة</label>
 
 <input id="country"
 
@@ -199,11 +183,7 @@ class="w-full p-4 mt-2 mb-4 rounded-xl bg-white/10">
 
 
 
-
-<label>
-نبذة عنك
-</label>
-
+<label>نبذة عنك</label>
 
 <textarea id="bio"
 
@@ -229,6 +209,8 @@ class="w-full p-4 mt-2 mb-5 rounded-xl bg-white/10"></textarea>
 
 
 
+
+
 <div class="locked rounded-xl p-4 mb-3">
 
 🔒 رقم العضوية
@@ -238,6 +220,8 @@ class="w-full p-4 mt-2 mb-5 rounded-xl bg-white/10"></textarea>
 <span id="uid"></span>
 
 </div>
+
+
 
 
 
@@ -257,6 +241,8 @@ class="w-full p-4 mt-2 mb-5 rounded-xl bg-white/10"></textarea>
 
 
 
+
+
 <div class="locked rounded-xl p-4 mb-5">
 
 ⭐ النقاط
@@ -270,8 +256,6 @@ class="w-full p-4 mt-2 mb-5 rounded-xl bg-white/10"></textarea>
 
 
 
-
-
 <button onclick="saveProfile()"
 
 class="w-full bg-red-500 py-4 rounded-xl font-bold">
@@ -281,13 +265,11 @@ class="w-full bg-red-500 py-4 rounded-xl font-bold">
 </button>
 
 
-
 <p id="message" class="text-center mt-4"></p>
 
 
 
 </div>
-
 
 
 </main>
@@ -296,9 +278,7 @@ class="w-full bg-red-500 py-4 rounded-xl font-bold">
 
 
 
-
-
-<!-- نافذة اختيار الصورة -->
+<!-- نافذة اختيار الافاتار -->
 
 
 <div id="avatarModal" class="modal">
@@ -307,19 +287,18 @@ class="w-full bg-red-500 py-4 rounded-xl font-bold">
 <div class="modal-box">
 
 
-<h2 class="text-2xl font-bold text-center mb-5">
-اختر الصورة الشخصية
+<h2 class="text-xl font-bold text-center mb-5">
+اختر الصورة الرمزية
 </h2>
 
 
 
 <div id="avatarList"
 
-class="grid grid-cols-3 gap-4">
+class="grid grid-cols-4 gap-4">
 
 
 </div>
-
 
 
 
@@ -333,7 +312,6 @@ class="w-full bg-yellow-600 p-3 rounded-xl mt-5">
 
 
 
-
 <button onclick="closeAvatarBox()"
 
 class="w-full bg-gray-600 p-3 rounded-xl mt-3">
@@ -341,7 +319,6 @@ class="w-full bg-gray-600 p-3 rounded-xl mt-3">
 إغلاق
 
 </button>
-
 
 
 </div>
@@ -363,7 +340,6 @@ onAuthStateChanged
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
-
 import {
 
 doc,
@@ -376,32 +352,41 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
-
 let currentUID="";
 
-let selectedAvatar="";
+let selectedAvatar="👤";
 
 
 
-
-// صور رسمية للمستخدمين
+// أفاتارات رمزية محايدة
 
 let avatars=[
 
-"https://randomuser.me/api/portraits/men/32.jpg",
-"https://randomuser.me/api/portraits/men/44.jpg",
-"https://randomuser.me/api/portraits/men/68.jpg",
-"https://randomuser.me/api/portraits/men/75.jpg",
-"https://randomuser.me/api/portraits/men/85.jpg",
+"👨‍💼",
+"👩‍💼",
+"🧑‍💻",
+"👨‍🚀",
+"👩‍🚀",
+"🧔",
+"👩‍💻",
+"🧑‍🎓",
 
-"https://randomuser.me/api/portraits/women/44.jpg",
-"https://randomuser.me/api/portraits/women/47.jpg",
-"https://randomuser.me/api/portraits/women/65.jpg",
-"https://randomuser.me/api/portraits/women/68.jpg",
-"https://randomuser.me/api/portraits/women/79.jpg"
+"🕴️",
+"👨‍🔬",
+"👩‍🔬",
+"🧑‍🏫",
+
+"👮",
+"👷",
+"🧑‍⚕️",
+"👨‍🍳",
+
+"👩‍🍳",
+"🧑‍🎨",
+"🤵",
+"👤"
 
 ];
-
 
 
 
@@ -411,23 +396,20 @@ let avatarList=document.getElementById("avatarList");
 
 
 
-avatars.forEach((img)=>{
+avatars.forEach((icon)=>{
 
 
-avatarList.innerHTML += `
+avatarList.innerHTML+=`
 
+<div onclick="chooseAvatar('${icon}')"
 
-<img
+class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-4xl cursor-pointer">
 
-src="${img}"
+${icon}
 
-onclick="chooseAvatar('${img}')"
-
-class="w-20 h-20 rounded-full object-cover bg-white p-1 avatar">
-
+</div>
 
 `;
-
 
 });
 
@@ -436,13 +418,9 @@ class="w-20 h-20 rounded-full object-cover bg-white p-1 avatar">
 
 
 
-
-
 window.openAvatarBox=function(){
 
-
 document.getElementById("avatarModal").style.display="flex";
-
 
 }
 
@@ -452,9 +430,7 @@ document.getElementById("avatarModal").style.display="flex";
 
 window.closeAvatarBox=function(){
 
-
 document.getElementById("avatarModal").style.display="none";
-
 
 }
 
@@ -462,15 +438,13 @@ document.getElementById("avatarModal").style.display="none";
 
 
 
+window.chooseAvatar=function(icon){
 
 
-window.chooseAvatar=function(img){
+selectedAvatar=icon;
 
 
-selectedAvatar=img;
-
-
-document.getElementById("mainAvatar").src=img;
+document.getElementById("mainAvatar").innerHTML=icon;
 
 
 closeAvatarBox();
@@ -487,16 +461,16 @@ closeAvatarBox();
 window.randomAvatar=function(){
 
 
-let img=
+let icon=
 
 avatars[Math.floor(Math.random()*avatars.length)];
 
 
-
-chooseAvatar(img);
+chooseAvatar(icon);
 
 
 }
+
 
 
 
@@ -522,14 +496,11 @@ currentUID=user.uid;
 
 
 
-
 let snap=await getDoc(
 
 doc(db,"users",currentUID)
 
 );
-
-
 
 
 
@@ -540,36 +511,15 @@ let data=snap.data();
 
 
 
+document.getElementById("name").value=data.name || "";
 
-document.getElementById("name").value=
+document.getElementById("username").value=data.username || "";
 
-data.name || "";
+document.getElementById("phone").value=data.phone || "";
 
+document.getElementById("country").value=data.country || "";
 
-
-document.getElementById("username").value=
-
-data.username || "";
-
-
-
-document.getElementById("phone").value=
-
-data.phone || "";
-
-
-
-document.getElementById("country").value=
-
-data.country || "";
-
-
-
-document.getElementById("bio").value=
-
-data.bio || "";
-
-
+document.getElementById("bio").value=data.bio || "";
 
 
 
@@ -579,11 +529,9 @@ data.email || user.email;
 
 
 
-
 document.getElementById("uid").innerHTML=
 
 currentUID;
-
 
 
 
@@ -593,41 +541,28 @@ document.getElementById("balance").innerHTML=
 
 
 
-
 document.getElementById("points").innerHTML=
 
 data.points || 0;
 
 
 
-
-
 if(data.photoURL){
-
 
 selectedAvatar=data.photoURL;
 
-
-document.getElementById("mainAvatar").src=
-
-data.photoURL;
-
+document.getElementById("mainAvatar").innerHTML=data.photoURL;
 
 }
+
 
 else{
 
 
-selectedAvatar=avatars[0];
-
-
-document.getElementById("mainAvatar").src=
-
-avatars[0];
+document.getElementById("mainAvatar").innerHTML="👤";
 
 
 }
-
 
 
 }
@@ -660,18 +595,13 @@ doc(db,"users",currentUID),
 
 name:document.getElementById("name").value,
 
-
 username:document.getElementById("username").value,
-
 
 phone:document.getElementById("phone").value,
 
-
 country:document.getElementById("country").value,
 
-
 bio:document.getElementById("bio").value,
-
 
 photoURL:selectedAvatar
 
@@ -699,6 +629,7 @@ document.getElementById("message").innerHTML=
 
 
 }
+
 
 
 }
