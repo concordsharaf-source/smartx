@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smart X - لوحة التحكم</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+tailwind.config={
+theme:{
+extend:{
+colors:{
+gold:'#e94560',
+success:'#00d09c'
+}
+}
+}
+}
+</script>
+
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+*{
+font-family:'Cairo',sans-serif;
+}
+
+body{
+background:#0b1120;
+}
+
+
+.glass{
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(15px);
+border:1px solid rgba(255,255,255,.1);
+}
+
+
+.gold-gradient{
+background:linear-gradient(135deg,#e94560,#ff6b6b);
+}
+
+
+.card-hover:hover{
+transform:translateY(-5px);
+transition:.3s;
+}
+
+
+</style>
+
+</head>
+
+
+
+<body class="text-white">
+
+
+
+
+
+<!-- القائمة الجانبية -->
+
+
+<aside class="fixed right-0 top-0 h-full w-64 glass p-5 hidden md:block">
+
+
+<h1 class="text-3xl font-black mb-10">
+
+Smart
+
+<span class="text-gold">
+
+X
+
+</span>
+
+</h1>
+
+
+
+<nav class="space-y-4">
+
+
+<a class="block p-3 rounded-xl bg-white/10">
+🏠 الرئيسية
+</a>
+
+
+<a href="wallet.html" class="block p-3 rounded-xl hover:bg-white/10">
+💰 المحفظة
+</a>
+
+
+<a href="deposit.html" class="block p-3 rounded-xl hover:bg-white/10">
+📥 الإيداع
+</a>
+
+
+<a href="withdraw.html" class="block p-3 rounded-xl hover:bg-white/10">
+📤 السحب
+</a>
+
+
+<a href="referrals.html" class="block p-3 rounded-xl hover:bg-white/10">
+🎁 الإحالات
+</a>
+
+
+<a href="settings.html" class="block p-3 rounded-xl hover:bg-white/10">
+⚙️ الإعدادات
+</a>
+
+
+</nav>
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+<!-- المحتوى -->
+
+
+<main class="md:mr-64 p-5">
+
+
+
+
+
+
+<!-- الهيدر -->
+
+
+<header class="glass rounded-3xl p-5 flex justify-between items-center mb-6">
+
+
+<div>
+
+<p class="text-gray-400">
+مرحبًا بك
+</p>
+
+
+<h2 class="text-2xl font-bold">
+
+<span id="username">
+
+المستخدم
+
+</span>
+
+👋
+
+</h2>
+
+
+</div>
+
+
+
+
+
+<div class="flex gap-4 items-center">
+
+
+<button class="text-2xl">
+🔔
+</button>
+
+
+<button onclick="logout()"
+class="text-red-300">
+
+خروج
+
+</button>
+
+
+</div>
+
+
+
+</header>
+
+
+
+
+
+
+
+<!-- البطاقات -->
+
+
+<div class="grid md:grid-cols-4 grid-cols-2 gap-4">
+
+
+
+<div class="glass rounded-3xl p-5 card-hover">
+
+<p class="text-gray-400">
+الرصيد
+</p>
+
+<h2 class="text-3xl font-bold text-success">
+
+$<span id="balance">0</span>
+
+</h2>
+
+</div>
+
+
+
+
+
+<div class="glass rounded-3xl p-5 card-hover">
+
+<p class="text-gray-400">
+الأرباح
+</p>
+
+<h2 class="text-3xl font-bold">
+
+$250
+
+</h2>
+
+</div>
+
+
+
+
+
+<div class="glass rounded-3xl p-5 card-hover">
+
+<p class="text-gray-400">
+النقاط
+</p>
+
+<h2 class="text-3xl font-bold text-gold">
+
+<span id="points">
+
+0
+
+</span>
+
+</h2>
+
+</div>
+
+
+
+
+
+
+<div class="glass rounded-3xl p-5 card-hover">
+
+<p class="text-gray-400">
+المستوى
+</p>
+
+<h2 class="text-3xl font-bold">
+
+VIP 1
+
+</h2>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<!-- الرسم البياني -->
+
+
+<div class="glass rounded-3xl p-6 mt-6">
+
+
+<h2 class="text-xl font-bold mb-5">
+
+حركة الحساب
+
+</h2>
+
+
+<div class="h-40 flex items-end gap-3">
+
+
+<div class="bg-success/70 w-8 h-16 rounded"></div>
+
+<div class="bg-success/70 w-8 h-28 rounded"></div>
+
+<div class="bg-success/70 w-8 h-20 rounded"></div>
+
+<div class="bg-success/70 w-8 h-36 rounded"></div>
+
+<div class="bg-success/70 w-8 h-24 rounded"></div>
+
+<div class="bg-success/70 w-8 h-32 rounded"></div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- العمليات -->
+
+
+<div class="glass rounded-3xl p-6 mt-6">
+
+
+<h2 class="text-xl font-bold mb-4">
+
+آخر العمليات
+
+</h2>
+
+
+
+<div class="flex justify-between border-b border-white/10 py-3">
+
+<span>
+إيداع
+</span>
+
+<span class="text-success">
++500$
+</span>
+
+</div>
+
+
+
+
+<div class="flex justify-between border-b border-white/10 py-3">
+
+<span>
+مكافأة إحالة
+</span>
+
+<span class="text-gold">
++50 نقطة
+</span>
+
+</div>
+
+
+
+
+<div class="flex justify-between py-3">
+
+<span>
+فتح الحساب
+</span>
+
+<span>
+تم
+</span>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+</main>
+
+
+
+
+
+
+
+<script>
+
+
+let user =
+JSON.parse(localStorage.getItem("smartUser"));
+
+
+
+if(user){
+
+document.getElementById("username").innerHTML=user.name;
+
+document.getElementById("balance").innerHTML=user.balance;
+
+document.getElementById("points").innerHTML=user.points;
+
+
+}
+
+
+
+
+function logout(){
+
+localStorage.clear();
+
+window.location="index.html";
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
