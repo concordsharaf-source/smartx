@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smart X - الإيداع</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+tailwind.config={
+theme:{
+extend:{
+colors:{
+gold:'#e94560',
+success:'#00d09c'
+}
+}
+}
+}
+</script>
+
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+*{
+font-family:'Cairo',sans-serif;
+}
+
+body{
+background:#0b1120;
+}
+
+.glass{
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(15px);
+border:1px solid rgba(255,255,255,.1);
+}
+
+.gold-gradient{
+background:linear-gradient(135deg,#e94560,#ff6b6b);
+}
+
+input,select{
+outline:none;
+}
+
+</style>
+
+</head>
+
+
+<body class="text-white min-h-screen">
+
+
+
+<header class="glass p-5 flex justify-between items-center">
+
+<h1 class="text-3xl font-black">
+
+Smart <span class="text-gold">X</span>
+
+</h1>
+
+
+<a href="wallet.html">
+⬅ العودة
+</a>
+
+
+</header>
+
+
+
+
+
+
+
+<main class="max-w-xl mx-auto p-5">
+
+
+
+<h2 class="text-3xl font-bold mb-6">
+
+📥 طلب إيداع
+
+</h2>
+
+
+
+
+
+
+
+<div class="glass rounded-3xl p-7">
+
+
+
+
+
+
+<label class="block mb-2 text-gray-300">
+
+طريقة الدفع
+
+</label>
+
+
+<select id="method"
+
+class="w-full p-4 mb-5 rounded-xl bg-white/10 text-white">
+
+
+<option value="تحويل بنكي">
+تحويل بنكي
+</option>
+
+
+<option value="محفظة إلكترونية">
+محفظة إلكترونية
+</option>
+
+
+<option value="عملات رقمية">
+عملات رقمية
+</option>
+
+
+</select>
+
+
+
+
+
+
+
+<label class="block mb-2 text-gray-300">
+
+المبلغ
+
+</label>
+
+
+<input
+
+id="amount"
+
+type="number"
+
+placeholder="مثال: 500"
+
+class="w-full p-4 mb-5 rounded-xl bg-white/10"
+
+>
+
+
+
+
+
+
+
+
+<label class="block mb-2 text-gray-300">
+
+رقم العملية / ملاحظة
+
+</label>
+
+
+<input
+
+id="note"
+
+type="text"
+
+placeholder="رقم التحويل"
+
+class="w-full p-4 mb-5 rounded-xl bg-white/10"
+
+>
+
+
+
+
+
+
+
+<label class="block mb-2 text-gray-300">
+
+إثبات التحويل
+
+</label>
+
+
+<input
+
+id="image"
+
+type="file"
+
+class="w-full p-4 mb-6 rounded-xl bg-white/10"
+
+>
+
+
+
+
+
+
+
+<button
+
+onclick="sendDeposit()"
+
+class="w-full py-4 rounded-xl gold-gradient font-bold text-lg">
+
+إرسال طلب الإيداع
+
+</button>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+<div class="glass rounded-3xl p-6 mt-6">
+
+
+<h3 class="text-xl font-bold mb-3">
+
+ملاحظات
+
+</h3>
+
+
+<ul class="text-gray-300 space-y-2">
+
+<li>✓ سيتم مراجعة الطلب من الإدارة</li>
+
+<li>✓ يظهر الرصيد بعد الموافقة</li>
+
+<li>✓ احتفظ بإثبات التحويل</li>
+
+</ul>
+
+
+</div>
+
+
+
+
+</main>
+
+
+
+
+
+
+
+<script>
+
+
+function sendDeposit(){
+
+
+
+let amount =
+document.getElementById("amount").value;
+
+
+let method =
+document.getElementById("method").value;
+
+
+let note =
+document.getElementById("note").value;
+
+
+
+
+if(!amount){
+
+alert("أدخل مبلغ الإيداع");
+
+return;
+
+}
+
+
+
+
+
+
+let deposits =
+
+JSON.parse(localStorage.getItem("deposits")) || [];
+
+
+
+
+
+
+let request={
+
+
+id:Date.now(),
+
+amount:Number(amount),
+
+method:method,
+
+note:note,
+
+status:"قيد المراجعة",
+
+date:new Date().toLocaleDateString("ar")
+
+};
+
+
+
+
+
+deposits.push(request);
+
+
+
+
+
+localStorage.setItem(
+
+"deposits",
+
+JSON.stringify(deposits)
+
+);
+
+
+
+
+
+alert("تم إرسال طلب الإيداع بنجاح");
+
+
+window.location="wallet.html";
+
+
+}
+
+
+
+</script>
+
+
+
+</body>
+
+</html>
