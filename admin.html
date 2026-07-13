@@ -42,6 +42,7 @@ font-weight:bold;
 <body class="text-white min-h-screen">
 
 
+
 <header class="glass p-5 flex justify-between items-center">
 
 <h1 class="text-3xl font-black">
@@ -59,6 +60,7 @@ Smart <span class="text-red-400">X</span>
 
 
 
+
 <main class="max-w-7xl mx-auto p-5">
 
 
@@ -68,18 +70,81 @@ Smart <span class="text-red-400">X</span>
 
 
 
+
 <h2 class="text-2xl font-bold mb-4">
 طلبات الإيداع 💰
 </h2>
 
 
-<div id="deposits" class="space-y-4 mb-10"></div>
+<div id="deposits" class="space-y-4 mb-10">
+
+</div>
+
+
+
+
+
+<div class="glass rounded-3xl p-5 mb-6">
+
+
+<h2 class="text-2xl font-bold mb-4">
+بحث وترتيب الأعضاء 👥
+</h2>
+
+
+
+<input
+
+id="search"
+
+oninput="filterUsers()"
+
+placeholder="ابحث بالاسم أو البريد أو الهاتف"
+
+class="w-full p-4 rounded-xl bg-white/10 mb-4"
+
+
+
+>
+
+
+
+<select
+
+id="sort"
+
+onchange="filterUsers()"
+
+class="w-full p-4 rounded-xl bg-white/10 text-black">
+
+
+<option value="name">
+ترتيب حسب الاسم
+</option>
+
+
+<option value="high">
+أعلى رصيد
+</option>
+
+
+<option value="low">
+أقل رصيد
+</option>
+
+
+</select>
+
+
+
+</div>
+
 
 
 
 
 <h2 class="text-2xl font-bold mb-4">
-الأعضاء 👥
+الأعضاء
 </h2>
 
 
@@ -88,8 +153,6 @@ Smart <span class="text-red-400">X</span>
 
 
 </main>
-
-
 
 
 
@@ -126,6 +189,7 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
+let allUsers=[];
 
 
 
@@ -142,7 +206,13 @@ return;
 }
 
 
-let admin=await getDoc(doc(db,"users",user.uid));
+
+let admin=await getDoc(
+
+doc(db,"users",user.uid)
+
+);
+
 
 
 if(!admin.exists() || admin.data().role!="admin"){
@@ -154,35 +224,22 @@ return;
 }
 
 
+
 loadDeposits();
 
 loadUsers();
 
 
 });
-
-
-
-
-
-
-
-
-
 async function loadDeposits(){
 
 
 let box=document.getElementById("deposits");
 
-box.innerHTML="لا توجد طلبات";
-
+box.innerHTML="";
 
 
 let snap=await getDocs(collection(db,"deposits"));
-
-
-
-box.innerHTML="";
 
 
 
@@ -202,20 +259,32 @@ box.innerHTML+=`
 <div class="glass rounded-3xl p-5">
 
 
-<h3 class="text-xl font-bold">${d.name}</h3>
+<h3 class="text-xl font-bold">
+${d.name || ""}
+</h3>
 
 
-<p>💰 المبلغ: ${d.amount}</p>
+<p>
+💰 المبلغ: ${d.amount}
+</p>
 
-<p>🏦 الطريقة: ${d.method}</p>
 
-<p>${d.note || ""}</p>
+<p>
+🏦 الطريقة: ${d.method}
+</p>
+
+
+<p>
+📝 ${d.note || ""}
+</p>
+
 
 
 <div class="flex gap-3 mt-4">
 
 
 <button onclick="approveDeposit('${item.id}','${d.userId}',${d.amount})"
+
 class="bg-green-600 btn">
 
 قبول
@@ -225,6 +294,7 @@ class="bg-green-600 btn">
 
 
 <button onclick="rejectDeposit('${item.id}')"
+
 class="bg-red-600 btn">
 
 رفض
@@ -239,15 +309,15 @@ class="bg-red-600 btn">
 
 `;
 
-}
 
+
+}
 
 
 });
 
 
 }
-
 
 
 
@@ -281,6 +351,7 @@ status:"approved"
 
 
 loadDeposits();
+
 loadUsers();
 
 
@@ -322,24 +393,130 @@ async function loadUsers(){
 let box=document.getElementById("users");
 
 
-box.innerHTML="";
-
-
-
 let snap=await getDocs(collection(db,"users"));
+
+
+
+allUsers=[];
 
 
 
 snap.forEach((item)=>{
 
 
-let u=item.data();
+allUsers.push({
 
-let id=item.id;
+id:item.id,
+
+...item.data()
+
+});
+
+
+});
+
+
+
+filterUsers();
+
+
+}
+
+
+
+
+
+
+
+
+
+window.filterUsers=function(){
+
+
+let box=document.getElementById("users");
+
+
+let search=document.getElementById("search").value.toLowerCase();
+
+
+let sort=document.getElementById("sort").value;
+
+
+
+let users=[...allUsers];
+
+
+
+users=users.filter((u)=>{
+
+
+return (
+
+(u.name || "").toLowerCase().includes(search)
+
+||
+
+(u.email || "").toLowerCase().includes(search)
+
+||
+
+String(u.phone || "").includes(search)
+
+);
+
+
+});
+
+
+
+
+
+if(sort=="name"){
+
+
+users.sort((a,b)=>(a.name||"").localeCompare(b.name||""));
+
+
+}
+
+
+
+if(sort=="high"){
+
+
+users.sort((a,b)=>(b.balance||0)-(a.balance||0));
+
+
+}
+
+
+
+if(sort=="low"){
+
+
+users.sort((a,b)=>(a.balance||0)-(b.balance||0));
+
+
+}
+
+
+
+
+
+
+
+box.innerHTML="";
+
+
+
+
+
+users.forEach((u)=>{
 
 
 
 box.innerHTML+=`
+
 
 <div class="glass rounded-3xl p-6">
 
@@ -356,14 +533,19 @@ ${u.name || ""}
 </p>
 
 
-<p class="text-green-400">
+<p>
+📱 الهاتف: ${u.phone || "غير موجود"}
+</p>
+
+
+<p class="text-green-400 mt-2">
 
 💰 الرصيد: ${u.balance || 0}
 
 </p>
 
 
-<input id="balance${id}"
+<input id="balance${u.id}"
 
 type="number"
 
@@ -376,7 +558,8 @@ class="w-full p-3 mt-3 rounded-xl bg-white/10">
 <div class="grid grid-cols-2 gap-2 mt-3">
 
 
-<button onclick="addBalance('${id}')"
+<button onclick="addBalance('${u.id}')"
+
 class="bg-green-700 btn">
 
 + رصيد
@@ -384,7 +567,8 @@ class="bg-green-700 btn">
 </button>
 
 
-<button onclick="minusBalance('${id}')"
+<button onclick="minusBalance('${u.id}')"
+
 class="bg-red-700 btn">
 
 - رصيد
@@ -405,7 +589,8 @@ class="bg-red-700 btn">
 </p>
 
 
-<input id="points${id}"
+
+<input id="points${u.id}"
 
 type="number"
 
@@ -418,7 +603,8 @@ class="w-full p-3 mt-3 rounded-xl bg-white/10">
 <div class="grid grid-cols-2 gap-2 mt-3">
 
 
-<button onclick="addPoints('${id}')"
+<button onclick="addPoints('${u.id}')"
+
 class="bg-yellow-600 btn">
 
 + نقاط
@@ -426,7 +612,8 @@ class="bg-yellow-600 btn">
 </button>
 
 
-<button onclick="minusPoints('${id}')"
+<button onclick="minusPoints('${u.id}')"
+
 class="bg-orange-700 btn">
 
 - نقاط
@@ -439,11 +626,13 @@ class="bg-orange-700 btn">
 
 </div>
 
+
 `;
 
 
 
 });
+
 
 
 }
@@ -476,6 +665,7 @@ await updateDoc(ref,{
 });
 
 
+
 loadUsers();
 
 
@@ -486,46 +676,75 @@ loadUsers();
 
 
 
-window.addBalance=(id)=>{
+
+
+window.addBalance=function(id){
+
 
 let v=Number(document.getElementById("balance"+id).value);
+
+
+if(v>0)
 
 changeValue(id,"balance",v);
 
+
 }
 
 
 
-window.minusBalance=(id)=>{
+
+
+
+
+window.minusBalance=function(id){
+
 
 let v=Number(document.getElementById("balance"+id).value);
 
+
+if(v>0)
+
 changeValue(id,"balance",-v);
+
 
 }
 
 
 
 
-window.addPoints=(id)=>{
+
+
+window.addPoints=function(id){
+
 
 let v=Number(document.getElementById("points"+id).value);
+
+
+if(v>0)
 
 changeValue(id,"points",v);
 
+
 }
 
 
 
 
-window.minusPoints=(id)=>{
+
+
+window.minusPoints=function(id){
+
 
 let v=Number(document.getElementById("points"+id).value);
 
+
+if(v>0)
+
 changeValue(id,"points",-v);
 
-}
 
+}
 
 
 
@@ -534,9 +753,12 @@ changeValue(id,"points",-v);
 
 window.logout=function(){
 
+
 signOut(auth);
 
+
 location="login.html";
+
 
 }
 
