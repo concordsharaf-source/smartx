@@ -6,12 +6,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Smart X - لوحة المدير</title>
+<title>Smart X - إدارة الأعضاء</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
 <script>
-tailwind.config = {
+tailwind.config={
 theme:{
 extend:{
 colors:{
@@ -46,11 +46,8 @@ border:1px solid rgba(255,255,255,.1);
 background:linear-gradient(135deg,#e94560,#ff6b6b);
 }
 
-input{
-outline:none;
-}
-
 </style>
+
 
 </head>
 
@@ -58,15 +55,15 @@ outline:none;
 <body class="text-white min-h-screen">
 
 
-
 <header class="glass p-5 flex justify-between items-center">
+
 
 <h1 class="text-3xl font-black">
 Smart <span class="text-gold">X</span>
 </h1>
 
 
-<button onclick="logout()">
+<button onclick="logout()" class="text-red-300">
 خروج
 </button>
 
@@ -77,11 +74,11 @@ Smart <span class="text-gold">X</span>
 
 
 
-<main class="max-w-6xl mx-auto p-5">
+<main class="max-w-7xl mx-auto p-5">
 
 
 <h2 class="text-3xl font-bold mb-6">
-لوحة تحكم المدير 👑
+لوحة المدير 👑
 </h2>
 
 
@@ -92,25 +89,30 @@ Smart <span class="text-gold">X</span>
 
 
 <div class="glass rounded-2xl p-5">
-<p class="text-gray-400">الأعضاء</p>
-<h2 class="text-3xl font-bold">1</h2>
-</div>
-
-
-<div class="glass rounded-2xl p-5">
-<p class="text-gray-400">الأرصدة</p>
-<h2 class="text-3xl font-bold text-success">
-$<span id="totalBalance">0</span>
+<p class="text-gray-400">عدد الأعضاء</p>
+<h2 id="count" class="text-3xl font-bold">
+0
 </h2>
 </div>
 
 
+
 <div class="glass rounded-2xl p-5">
-<p class="text-gray-400">النقاط</p>
-<h2 class="text-3xl font-bold text-gold">
-<span id="totalPoints">0</span>
+<p class="text-gray-400">إجمالي الأرصدة</p>
+<h2 id="money" class="text-3xl font-bold text-success">
+0 $
 </h2>
 </div>
+
+
+
+<div class="glass rounded-2xl p-5">
+<p class="text-gray-400">إجمالي النقاط</p>
+<h2 id="pointsTotal" class="text-3xl font-bold text-gold">
+0
+</h2>
+</div>
+
 
 
 <div class="glass rounded-2xl p-5">
@@ -127,67 +129,13 @@ $<span id="totalBalance">0</span>
 
 
 
-<div class="grid md:grid-cols-2 gap-6">
-
-
-
-<div class="glass rounded-3xl p-6">
-
-
-<h2 class="text-xl font-bold mb-5">
-إضافة رصيد 💰
-</h2>
 
 
 <input
-id="amount"
-type="number"
-placeholder="المبلغ"
-class="w-full p-4 mb-4 rounded-xl bg-white/10">
-
-
-<button onclick="addBalance()"
-class="w-full py-4 rounded-xl gold-gradient font-bold">
-
-إضافة الرصيد
-
-</button>
-
-
-</div>
-
-
-
-
-
-
-<div class="glass rounded-3xl p-6">
-
-
-<h2 class="text-xl font-bold mb-5">
-إضافة نقاط ⭐
-</h2>
-
-
-<input
-id="points"
-type="number"
-placeholder="عدد النقاط"
-class="w-full p-4 mb-4 rounded-xl bg-white/10">
-
-
-<button onclick="addPoints()"
-class="w-full py-4 rounded-xl gold-gradient font-bold">
-
-إضافة النقاط
-
-</button>
-
-
-</div>
-
-
-</div>
+id="search"
+onkeyup="showUsers()"
+placeholder="🔍 ابحث باسم المستخدم أو الهاتف"
+class="w-full p-4 mb-6 rounded-xl bg-white/10">
 
 
 
@@ -195,35 +143,42 @@ class="w-full py-4 rounded-xl gold-gradient font-bold">
 
 
 
-<div class="glass rounded-3xl p-6 mt-6">
+<div class="glass rounded-3xl p-5 overflow-x-auto">
 
 
-<h2 class="text-xl font-bold mb-5">
-بيانات المستخدم
-</h2>
+<table class="w-full text-center">
 
 
-<p>
-الاسم:
-<span id="username">-</span>
-</p>
+<thead>
+
+<tr class="border-b border-white/20">
+
+<th class="p-3">الاسم</th>
+
+<th>الهاتف</th>
+
+<th>البريد</th>
+
+<th>الرصيد</th>
+
+<th>النقاط</th>
+
+<th>التحكم</th>
+
+</tr>
+
+</thead>
 
 
-<p class="mt-3">
-الرصيد:
-<span id="userBalance" class="text-success">0</span> $
-</p>
+<tbody id="usersTable">
+
+</tbody>
 
 
-<p class="mt-3">
-النقاط:
-<span id="userPoints" class="text-gold">0</span>
-</p>
+</table>
 
 
 </div>
-
-
 
 
 
@@ -238,489 +193,162 @@ class="w-full py-4 rounded-xl gold-gradient font-bold">
 <script>
 
 
-let role = localStorage.getItem("userRole");
+let users =
+JSON.parse(localStorage.getItem("smartUsers")) || [];
 
-let user = JSON.parse(localStorage.getItem("smartUser"));
 
 
 
-// السماح للمدير بالدخول
-if(role !== "admin" && !user){
 
-alert("غير مصرح بالدخول");
 
-window.location="login.html";
+function showUsers(){
 
-}
 
 
+let table =
+document.getElementById("usersTable");
 
+table.innerHTML="";
 
 
-// إذا كان مديرًا وليس لديه بيانات مستخدم
-if(!user){
 
-user = {
+let search =
+document.getElementById("search").value.toLowerCase();
 
-name:"المدير",
 
-balance:0,
 
-points:0
 
-};
 
-}
+let totalMoney=0;
 
+let totalPoints=0;
 
 
 
-function showData(){
 
-document.getElementById("username").innerHTML=user.name;
 
-document.getElementById("userBalance").innerHTML=user.balance;
 
-document.getElementById("userPoints").innerHTML=user.points;
+users
+.filter(user=>
 
-document.getElementById("totalBalance").innerHTML=user.balance;
+user.name.toLowerCase().includes(search)
+||
+user.username.toLowerCase().includes(search)
+||
+user.phone.includes(search)
 
-document.getElementById("totalPoints").innerHTML=user.points;
+)
 
-}
+.forEach((user,index)=>{
 
 
 
-showData();
+totalMoney += Number(user.balance);
 
+totalPoints += Number(user.points);
 
 
 
 
 
-function addBalance(){
+table.innerHTML += `
 
+<tr class="border-b border-white/10">
 
-let amount = Number(
-document.getElementById("amount").value
-);
 
+<td class="p-3">
 
+${user.name}
 
-if(amount>0){
+<br>
 
-user.balance += amount;
+<span class="text-gray-400 text-sm">
 
-save();
+${user.username}
 
-alert("تم إضافة الرصيد بنجاح");
+</span>
 
-}
+</td>
 
 
-}
+<td>
 
+${user.phone}
 
+</td>
 
 
+<td>
 
+${user.email}
 
-function addPoints(){
+</td>
 
 
-let points = Number(
-document.getElementById("points").value
-);
+<td class="text-success">
 
+${user.balance}$
 
+</td>
 
-if(points>0){
 
-user.points += points;
+<td class="text-gold">
 
-save();
+${user.points}
 
-alert("تم إضافة النقاط بنجاح");
+</td>
 
-}
 
 
-}
+<td>
 
 
+<button
 
+onclick="addMoney(${index})"
 
+class="bg-green-600 px-3 py-2 rounded-lg m-1">
 
-
-function save(){
-
-localStorage.setItem(
-"smartUser",
-JSON.stringify(user)
-);
-
-
-showData();
-
-}
-
-
-
-
-
-
-
-function logout(){
-
-localStorage.clear();
-
-window.location="index.html";
-
-}
-
-
-</script>
-
-
-
-</body>
-
-</html>
-outline:none;
-
-}
-
-</style>
-
-</head>
-
-
-
-<body class="text-white min-h-screen">
-
-
-
-
-
-<header class="glass p-5 flex justify-between items-center">
-
-
-<h1 class="text-3xl font-black">
-
-Smart <span class="text-gold">X</span>
-
-</h1>
-
-
-<button onclick="logout()">
-
-خروج
++ رصيد
 
 </button>
 
 
-</header>
 
+<button
 
+onclick="addPoints(${index})"
 
+class="bg-yellow-600 px-3 py-2 rounded-lg m-1">
 
-
-
-
-<main class="max-w-6xl mx-auto p-5">
-
-
-
-<h2 class="text-3xl font-bold mb-6">
-
-لوحة تحكم المدير 👑
-
-</h2>
-
-
-
-
-
-
-
-<!-- الإحصائيات -->
-
-
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-
-
-
-<div class="glass rounded-2xl p-5">
-
-<p class="text-gray-400">
-
-الأعضاء
-
-</p>
-
-<h2 class="text-3xl font-bold">
-
-1
-
-</h2>
-
-</div>
-
-
-
-
-<div class="glass rounded-2xl p-5">
-
-<p class="text-gray-400">
-
-الأرصدة
-
-</p>
-
-<h2 class="text-3xl font-bold text-success">
-
-$0
-
-</h2>
-
-</div>
-
-
-
-
-<div class="glass rounded-2xl p-5">
-
-<p class="text-gray-400">
-
-النقاط
-
-</p>
-
-<h2 class="text-3xl font-bold text-gold">
-
-0
-
-</h2>
-
-</div>
-
-
-
-
-<div class="glass rounded-2xl p-5">
-
-<p class="text-gray-400">
-
-الحالة
-
-</p>
-
-<h2 class="text-3xl">
-
-نشط
-
-</h2>
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-
-<!-- التحكم بالعضو -->
-
-
-<div class="grid md:grid-cols-2 gap-6">
-
-
-
-
-
-<div class="glass rounded-3xl p-6">
-
-
-<h2 class="text-xl font-bold mb-5">
-
-إضافة رصيد 💰
-
-</h2>
-
-
-
-<input
-
-id="amount"
-
-type="number"
-
-placeholder="المبلغ"
-
-class="w-full p-4 mb-4 rounded-xl bg-white/10"
-
-
-
->
-
-
-
-<button onclick="addBalance()"
-
-class="w-full py-4 rounded-xl gold-gradient font-bold">
-
-إضافة الرصيد
++ نقاط
 
 </button>
 
 
-</div>
+</td>
 
 
+</tr>
 
+`;
 
 
 
+});
 
 
-<div class="glass rounded-3xl p-6">
 
 
-<h2 class="text-xl font-bold mb-5">
 
-إضافة نقاط ⭐
 
-</h2>
+document.getElementById("count").innerHTML=users.length;
 
+document.getElementById("money").innerHTML=totalMoney+" $";
 
+document.getElementById("pointsTotal").innerHTML=totalPoints;
 
-<input
 
-id="points"
-
-type="number"
-
-placeholder="عدد النقاط"
-
-class="w-full p-4 mb-4 rounded-xl bg-white/10"
-
-
-
->
-
-
-
-<button onclick="addPoints()"
-
-class="w-full py-4 rounded-xl gold-gradient font-bold">
-
-إضافة النقاط
-
-</button>
-
-
-</div>
-
-
-
-
-</div>
-
-
-
-
-
-
-
-<!-- بيانات العضو -->
-
-
-<div class="glass rounded-3xl p-6 mt-6">
-
-
-<h2 class="text-xl font-bold mb-5">
-
-بيانات المستخدم الحالي
-
-</h2>
-
-
-<div class="space-y-3">
-
-
-<p>
-
-الاسم:
-<span id="username">
-
--
-
-</span>
-
-</p>
-
-
-<p>
-
-الرصيد:
-<span id="userBalance" class="text-success">
-
-0
-
-</span>
-
-$
-
-</p>
-
-
-<p>
-
-النقاط:
-<span id="userPoints" class="text-gold">
-
-0
-
-</span>
-
-</p>
-
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-</main>
-
-
-
-
-
-
-<script>
-
-
-let user =
-JSON.parse(localStorage.getItem("smartUser"));
-
-
-
-if(!user){
-
-alert("لا يوجد مستخدم");
-
-window.location="login.html";
 
 }
 
@@ -728,40 +356,20 @@ window.location="login.html";
 
 
 
-function showData(){
 
+function addMoney(index){
 
-document.getElementById("username").innerHTML=user.name;
-
-
-document.getElementById("userBalance").innerHTML=user.balance;
-
-
-document.getElementById("userPoints").innerHTML=user.points;
-
-
-}
-
-
-showData();
-
-
-
-
-
-
-function addBalance(){
 
 
 let amount =
-Number(document.getElementById("amount").value);
+prompt("أدخل مبلغ الإضافة");
 
 
 
-if(amount>0){
+if(amount && amount>0){
 
 
-user.balance += amount;
+users[index].balance += Number(amount);
 
 
 save();
@@ -769,29 +377,30 @@ save();
 
 alert("تم إضافة الرصيد");
 
+}
+
 
 }
 
 
 
-}
 
 
 
 
+function addPoints(index){
 
-function addPoints(){
 
 
 let points =
-Number(document.getElementById("points").value);
+prompt("أدخل عدد النقاط");
 
 
 
-if(points>0){
+if(points && points>0){
 
 
-user.points += points;
+users[index].points += Number(points);
 
 
 save();
@@ -799,12 +408,12 @@ save();
 
 alert("تم إضافة النقاط");
 
+}
+
 
 }
 
 
-
-}
 
 
 
@@ -815,14 +424,14 @@ function save(){
 
 localStorage.setItem(
 
-"smartUser",
+"smartUsers",
 
-JSON.stringify(user)
+JSON.stringify(users)
 
 );
 
 
-showData();
+showUsers();
 
 
 }
@@ -835,20 +444,18 @@ showData();
 
 function logout(){
 
-
-localStorage.clear();
-
 window.location="index.html";
-
 
 }
 
 
 
+
+
+showUsers();
+
+
 </script>
-
-
-
 
 
 </body>
