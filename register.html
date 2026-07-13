@@ -11,7 +11,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
 <script>
-tailwind.config = {
+tailwind.config={
 theme:{
 extend:{
 colors:{
@@ -23,7 +23,6 @@ success:'#00d09c'
 }
 </script>
 
-
 <style>
 
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
@@ -32,31 +31,23 @@ success:'#00d09c'
 font-family:'Cairo',sans-serif;
 }
 
-
 body{
-
 background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
-
 }
-
 
 .glass{
-
 background:rgba(255,255,255,.1);
-
 backdrop-filter:blur(15px);
-
 border:1px solid rgba(255,255,255,.1);
-
 }
-
 
 .gold-gradient{
-
 background:linear-gradient(135deg,#e94560,#ff6b6b);
-
 }
 
+input{
+outline:none;
+}
 
 </style>
 
@@ -66,118 +57,88 @@ background:linear-gradient(135deg,#e94560,#ff6b6b);
 <body class="min-h-screen text-white flex items-center justify-center px-5">
 
 
-
 <div class="w-full max-w-md">
 
 
-
-<div class="text-center mb-8">
-
+<div class="text-center mb-6">
 
 <h1 class="text-5xl font-black">
-
 سمارت
-
-<span class="text-gold">
-
-إكس
-
-</span>
-
+<span class="text-gold">إكس</span>
 </h1>
 
-
 <p class="text-gray-300 mt-3">
-
 إنشاء حساب جديد
-
 </p>
-
 
 </div>
 
 
 
 
-
-
-<div class="glass rounded-3xl p-8 shadow-2xl">
-
+<div class="glass rounded-3xl p-8">
 
 
 <h2 class="text-2xl font-bold text-center mb-6">
-
-انضم إلى Smart X
-
+تسجيل عضو جديد
 </h2>
 
 
 
 
-<input
-
-id="fullname"
-
+<input id="fullname"
 type="text"
-
 placeholder="الاسم الكامل"
-
-class="w-full p-4 mb-4 rounded-xl bg-white/10 border border-white/10 outline-none"
-
->
+class="w-full p-4 mb-3 rounded-xl bg-white/10">
 
 
 
+<input id="phone"
+type="tel"
+placeholder="رقم الهاتف"
+class="w-full p-4 mb-3 rounded-xl bg-white/10">
 
-<input
 
-id="username"
 
+<input id="email"
+type="email"
+placeholder="البريد الإلكتروني"
+class="w-full p-4 mb-3 rounded-xl bg-white/10">
+
+
+
+<input id="username"
 type="text"
-
 placeholder="اسم المستخدم"
-
-class="w-full p-4 mb-4 rounded-xl bg-white/10 border border-white/10 outline-none"
-
->
+class="w-full p-4 mb-3 rounded-xl bg-white/10">
 
 
 
-
-<input
-
-id="password"
-
+<input id="password"
 type="password"
-
 placeholder="كلمة المرور"
-
-class="w-full p-4 mb-4 rounded-xl bg-white/10 border border-white/10 outline-none"
-
->
+class="w-full p-4 mb-3 rounded-xl bg-white/10">
 
 
 
+<input id="confirmPassword"
+type="password"
+placeholder="تأكيد كلمة المرور"
+class="w-full p-4 mb-3 rounded-xl bg-white/10">
 
-<input
 
-id="invite"
 
+<input id="invite"
 type="text"
-
 placeholder="كود الدعوة (اختياري)"
-
-class="w-full p-4 mb-6 rounded-xl bg-white/10 border border-white/10 outline-none"
-
->
+class="w-full p-4 mb-6 rounded-xl bg-white/10">
 
 
 
 
-<button
 
-onclick="register()"
 
+<button onclick="register()"
 class="w-full py-4 rounded-xl gold-gradient font-bold text-lg">
 
 إنشاء الحساب
@@ -186,41 +147,24 @@ class="w-full py-4 rounded-xl gold-gradient font-bold text-lg">
 
 
 
-
-<p class="text-center mt-6 text-gray-300">
-
+<p class="text-center mt-6">
 
 لديك حساب؟
 
-
-<a href="login.html"
-
-class="text-success font-bold">
+<a href="login.html" class="text-success font-bold">
 
 تسجيل الدخول
 
 </a>
 
-
 </p>
 
 
-
 </div>
 
 
-
-
-
-<div class="text-center mt-8 text-gray-400 text-sm">
-
-Smart X © 2026
-
 </div>
 
-
-
-</div>
 
 
 
@@ -234,29 +178,49 @@ function register(){
 
 
 let fullname =
-document.getElementById("fullname").value;
+document.getElementById("fullname").value.trim();
+
+
+let phone =
+document.getElementById("phone").value.trim();
+
+
+let email =
+document.getElementById("email").value.trim();
 
 
 let username =
-document.getElementById("username").value;
+document.getElementById("username").value.trim();
 
 
 let password =
 document.getElementById("password").value;
 
 
+let confirmPassword =
+document.getElementById("confirmPassword").value;
+
+
 let invite =
-document.getElementById("invite").value;
+document.getElementById("invite").value.trim();
 
 
 
-if(!fullname || !username || !password){
 
 
-alert("يرجى تعبئة البيانات");
+
+if(
+!fullname ||
+!phone ||
+!email ||
+!username ||
+!password ||
+!confirmPassword
+){
+
+alert("يرجى تعبئة جميع البيانات المطلوبة");
 
 return;
-
 
 }
 
@@ -264,10 +228,76 @@ return;
 
 
 
-let userData={
 
+
+if(password !== confirmPassword){
+
+alert("كلمتا المرور غير متطابقتين");
+
+return;
+
+}
+
+
+
+
+
+
+
+let users =
+JSON.parse(localStorage.getItem("smartUsers")) || [];
+
+
+
+
+
+
+
+let checkUser =
+users.find(
+u =>
+u.username === username ||
+u.email === email
+);
+
+
+
+
+
+
+if(checkUser){
+
+alert("اسم المستخدم أو البريد الإلكتروني مستخدم مسبقًا");
+
+return;
+
+}
+
+
+
+
+
+
+
+let code =
+"SMART-" + Math.floor(1000 + Math.random()*9000);
+
+
+
+
+
+
+
+let newUser={
+
+
+id:Date.now(),
 
 name:fullname,
+
+phone:phone,
+
+email:email,
 
 username:username,
 
@@ -277,7 +307,11 @@ balance:0,
 
 points:0,
 
-code:"SMART-"+Math.floor(1000+Math.random()*9000)
+inviteCode:code,
+
+invitedBy:invite,
+
+status:"نشط"
 
 
 };
@@ -286,28 +320,41 @@ code:"SMART-"+Math.floor(1000+Math.random()*9000)
 
 
 
+
+
+users.push(newUser);
+
+
+
+
+
+
+
 localStorage.setItem(
-
-"smartUser",
-
-JSON.stringify(userData)
-
+"smartUsers",
+JSON.stringify(users)
 );
+
+
+
+
 
 
 
 alert("تم إنشاء الحساب بنجاح");
 
 
+
 window.location="login.html";
+
 
 
 }
 
 
 
-</script>
 
+</script>
 
 
 </body>
