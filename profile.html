@@ -19,45 +19,38 @@ font-family:'Cairo',sans-serif;
 }
 
 body{
-background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
+background:linear-gradient(135deg,#101827,#172554,#0f172a);
 }
 
 .glass{
-background:rgba(255,255,255,.1);
+background:rgba(255,255,255,.08);
 backdrop-filter:blur(15px);
 border:1px solid rgba(255,255,255,.15);
 }
 
 .locked{
-background:rgba(255,255,255,.05);
-color:#aaa;
+background:rgba(255,255,255,.04);
+color:#a1a1aa;
 }
-
 
 .avatar{
 cursor:pointer;
-transition:.3s;
+transition:.25s;
 }
 
 .avatar:hover{
-transform:scale(1.1);
+transform:scale(1.08);
 }
 
 
 .modal{
 
 display:none;
-
 position:fixed;
-
 inset:0;
-
-background:rgba(0,0,0,.7);
-
-z-index:50;
-
+background:rgba(0,0,0,.75);
+z-index:100;
 align-items:center;
-
 justify-content:center;
 
 }
@@ -65,15 +58,13 @@ justify-content:center;
 
 .modal-box{
 
-background:#16213e;
-
-border-radius:25px;
-
-padding:20px;
-
+background:#111827;
 width:90%;
-
 max-width:450px;
+border-radius:25px;
+padding:20px;
+max-height:85vh;
+overflow:auto;
 
 }
 
@@ -105,16 +96,22 @@ Smart <span class="text-red-400">X</span>
 
 
 
+
 <main class="max-w-md mx-auto p-5">
 
 
+
 <h2 class="text-3xl font-bold mb-6">
-👤 حسابي
+👤 الملف الشخصي
 </h2>
 
 
 
+
 <div class="glass rounded-3xl p-6">
+
+
+
 
 
 
@@ -123,14 +120,16 @@ Smart <span class="text-red-400">X</span>
 
 <img id="mainAvatar"
 
-onclick="openAvatars()"
+onclick="openAvatarBox()"
 
-class="w-32 h-32 rounded-full mx-auto bg-white p-2 avatar">
+class="w-32 h-32 rounded-full mx-auto object-cover bg-white p-1 avatar">
+
 
 
 <p class="mt-3 text-gray-300">
 اضغط لتغيير الصورة
 </p>
+
 
 
 </div>
@@ -145,9 +144,11 @@ class="w-32 h-32 rounded-full mx-auto bg-white p-2 avatar">
 الاسم الكامل
 </label>
 
+
 <input id="name"
 
-class="w-full p-4 mb-4 mt-2 rounded-xl bg-white/10">
+class="w-full p-4 mt-2 mb-4 rounded-xl bg-white/10">
+
 
 
 
@@ -158,9 +159,11 @@ class="w-full p-4 mb-4 mt-2 rounded-xl bg-white/10">
 اسم المستخدم
 </label>
 
+
 <input id="username"
 
-class="w-full p-4 mb-4 mt-2 rounded-xl bg-white/10">
+class="w-full p-4 mt-2 mb-4 rounded-xl bg-white/10">
+
 
 
 
@@ -171,9 +174,12 @@ class="w-full p-4 mb-4 mt-2 rounded-xl bg-white/10">
 رقم الهاتف
 </label>
 
+
 <input id="phone"
 
-class="w-full p-4 mb-4 mt-2 rounded-xl bg-white/10">
+class="w-full p-4 mt-2 mb-4 rounded-xl bg-white/10">
+
+
 
 
 
@@ -183,22 +189,25 @@ class="w-full p-4 mb-4 mt-2 rounded-xl bg-white/10">
 الدولة
 </label>
 
+
 <input id="country"
 
-class="w-full p-4 mb-4 mt-2 rounded-xl bg-white/10">
+class="w-full p-4 mt-2 mb-4 rounded-xl bg-white/10">
+
+
 
 
 
 
 
 <label>
-نبذة
+نبذة عنك
 </label>
+
 
 <textarea id="bio"
 
-class="w-full p-4 mb-5 mt-2 rounded-xl bg-white/10"></textarea>
-
+class="w-full p-4 mt-2 mb-5 rounded-xl bg-white/10"></textarea>
 
 
 
@@ -215,6 +224,7 @@ class="w-full p-4 mb-5 mt-2 rounded-xl bg-white/10"></textarea>
 <span id="email"></span>
 
 </div>
+
 
 
 
@@ -262,7 +272,6 @@ class="w-full p-4 mb-5 mt-2 rounded-xl bg-white/10"></textarea>
 
 
 
-
 <button onclick="saveProfile()"
 
 class="w-full bg-red-500 py-4 rounded-xl font-bold">
@@ -272,11 +281,14 @@ class="w-full bg-red-500 py-4 rounded-xl font-bold">
 </button>
 
 
+
 <p id="message" class="text-center mt-4"></p>
 
 
 
 </div>
+
+
 
 </main>
 
@@ -286,7 +298,7 @@ class="w-full bg-red-500 py-4 rounded-xl font-bold">
 
 
 
-<!-- نافذة الافاتارات -->
+<!-- نافذة اختيار الصورة -->
 
 
 <div id="avatarModal" class="modal">
@@ -295,25 +307,25 @@ class="w-full bg-red-500 py-4 rounded-xl font-bold">
 <div class="modal-box">
 
 
-<h2 class="text-xl font-bold mb-4 text-center">
-
-اختر صورتك
-
+<h2 class="text-2xl font-bold text-center mb-5">
+اختر الصورة الشخصية
 </h2>
 
 
 
 <div id="avatarList"
 
-class="grid grid-cols-4 gap-3">
+class="grid grid-cols-3 gap-4">
+
 
 </div>
 
 
 
+
 <button onclick="randomAvatar()"
 
-class="w-full mt-5 bg-yellow-600 p-3 rounded-xl">
+class="w-full bg-yellow-600 p-3 rounded-xl mt-5">
 
 🎲 اختيار عشوائي
 
@@ -321,29 +333,21 @@ class="w-full mt-5 bg-yellow-600 p-3 rounded-xl">
 
 
 
-<button onclick="closeAvatars()"
 
-class="w-full mt-3 bg-gray-600 p-3 rounded-xl">
+<button onclick="closeAvatarBox()"
+
+class="w-full bg-gray-600 p-3 rounded-xl mt-3">
 
 إغلاق
 
 </button>
 
 
-</div>
-
 
 </div>
 
 
-
-
-
-
-
-
-
-
+</div>
 <script type="module">
 
 
@@ -359,12 +363,11 @@ onAuthStateChanged
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
+
 import {
 
 doc,
-
 getDoc,
-
 updateDoc
 
 }
@@ -374,45 +377,54 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
-let uid="";
+let currentUID="";
 
 let selectedAvatar="";
 
 
 
-let avatars=[];
+
+// صور رسمية للمستخدمين
+
+let avatars=[
+
+"https://randomuser.me/api/portraits/men/32.jpg",
+"https://randomuser.me/api/portraits/men/44.jpg",
+"https://randomuser.me/api/portraits/men/68.jpg",
+"https://randomuser.me/api/portraits/men/75.jpg",
+"https://randomuser.me/api/portraits/men/85.jpg",
+
+"https://randomuser.me/api/portraits/women/44.jpg",
+"https://randomuser.me/api/portraits/women/47.jpg",
+"https://randomuser.me/api/portraits/women/65.jpg",
+"https://randomuser.me/api/portraits/women/68.jpg",
+"https://randomuser.me/api/portraits/women/79.jpg"
+
+];
 
 
 
-for(let i=1;i<=40;i++){
-
-
-avatars.push(
-
-"https://api.dicebear.com/9.x/personas/svg?seed=SmartX"+i
-
-);
-
-
-}
 
 
 
-
-let box=document.getElementById("avatarList");
+let avatarList=document.getElementById("avatarList");
 
 
 
 avatars.forEach((img)=>{
 
 
-box.innerHTML+=`
+avatarList.innerHTML += `
 
-<img src="${img}"
+
+<img
+
+src="${img}"
 
 onclick="chooseAvatar('${img}')"
 
-class="w-16 h-16 rounded-full bg-white p-1 avatar">
+class="w-20 h-20 rounded-full object-cover bg-white p-1 avatar">
+
 
 `;
 
@@ -426,19 +438,23 @@ class="w-16 h-16 rounded-full bg-white p-1 avatar">
 
 
 
+window.openAvatarBox=function(){
 
-window.openAvatars=function(){
 
 document.getElementById("avatarModal").style.display="flex";
+
 
 }
 
 
 
 
-window.closeAvatars=function(){
+
+window.closeAvatarBox=function(){
+
 
 document.getElementById("avatarModal").style.display="none";
+
 
 }
 
@@ -457,7 +473,7 @@ selectedAvatar=img;
 document.getElementById("mainAvatar").src=img;
 
 
-closeAvatars();
+closeAvatarBox();
 
 
 }
@@ -471,14 +487,16 @@ closeAvatars();
 window.randomAvatar=function(){
 
 
-let img=avatars[Math.floor(Math.random()*avatars.length)];
+let img=
+
+avatars[Math.floor(Math.random()*avatars.length)];
+
 
 
 chooseAvatar(img);
 
 
 }
-
 
 
 
@@ -499,11 +517,19 @@ return;
 }
 
 
-uid=user.uid;
+
+currentUID=user.uid;
 
 
 
-let snap=await getDoc(doc(db,"users",uid));
+
+let snap=await getDoc(
+
+doc(db,"users",currentUID)
+
+);
+
+
 
 
 
@@ -513,51 +539,102 @@ if(snap.exists()){
 let data=snap.data();
 
 
-document.getElementById("name").value=data.name || "";
 
-document.getElementById("username").value=data.username || "";
 
-document.getElementById("phone").value=data.phone || "";
+document.getElementById("name").value=
 
-document.getElementById("country").value=data.country || "";
-
-document.getElementById("bio").value=data.bio || "";
+data.name || "";
 
 
 
-document.getElementById("email").innerHTML=data.email || user.email;
+document.getElementById("username").value=
 
-document.getElementById("uid").innerHTML=uid;
+data.username || "";
 
-document.getElementById("balance").innerHTML=(data.balance||0)+" $";
 
-document.getElementById("points").innerHTML=data.points||0;
+
+document.getElementById("phone").value=
+
+data.phone || "";
+
+
+
+document.getElementById("country").value=
+
+data.country || "";
+
+
+
+document.getElementById("bio").value=
+
+data.bio || "";
+
+
+
+
+
+document.getElementById("email").innerHTML=
+
+data.email || user.email;
+
+
+
+
+document.getElementById("uid").innerHTML=
+
+currentUID;
+
+
+
+
+document.getElementById("balance").innerHTML=
+
+(data.balance || 0)+" $";
+
+
+
+
+document.getElementById("points").innerHTML=
+
+data.points || 0;
+
+
 
 
 
 if(data.photoURL){
 
+
 selectedAvatar=data.photoURL;
 
-document.getElementById("mainAvatar").src=data.photoURL;
+
+document.getElementById("mainAvatar").src=
+
+data.photoURL;
 
 
-}else{
+}
+
+else{
 
 
 selectedAvatar=avatars[0];
 
-document.getElementById("mainAvatar").src=avatars[0];
+
+document.getElementById("mainAvatar").src=
+
+avatars[0];
 
 
 }
 
 
+
 }
+
 
 
 });
-
 
 
 
@@ -570,44 +647,62 @@ document.getElementById("mainAvatar").src=avatars[0];
 window.saveProfile=async function(){
 
 
+
 try{
 
 
-await updateDoc(doc(db,"users",uid),{
+await updateDoc(
+
+doc(db,"users",currentUID),
+
+{
 
 
 name:document.getElementById("name").value,
 
+
 username:document.getElementById("username").value,
+
 
 phone:document.getElementById("phone").value,
 
+
 country:document.getElementById("country").value,
 
+
 bio:document.getElementById("bio").value,
+
 
 photoURL:selectedAvatar
 
 
-});
+}
+
+);
 
 
 
-document.getElementById("message").innerHTML="✅ تم حفظ التعديلات";
+
+document.getElementById("message").innerHTML=
+
+"✅ تم حفظ التعديلات بنجاح";
 
 
 }
 
-catch(e){
+catch(error){
 
 
-document.getElementById("message").innerHTML="❌ "+e.message;
+document.getElementById("message").innerHTML=
+
+"❌ حدث خطأ: "+error.message;
 
 
 }
 
 
 }
+
 
 
 
