@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smart X - الملف الشخصي</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+*{
+font-family:'Cairo',sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
+}
+
+.glass{
+background:rgba(255,255,255,.1);
+backdrop-filter:blur(15px);
+border:1px solid rgba(255,255,255,.1);
+}
+
+.gold{
+background:linear-gradient(135deg,#e94560,#ff6b6b);
+}
+
+input,textarea{
+outline:none;
+}
+
+</style>
+
+</head>
+
+
+
+<body class="text-white min-h-screen">
+
+
+
+<header class="glass p-5 flex justify-between items-center">
+
+<h1 class="text-3xl font-black">
+Smart <span class="text-red-400">X</span>
+</h1>
+
+
+<a href="dashboard.html" class="text-green-400">
+العودة
+</a>
+
+
+</header>
+
+
+
+
+
+<main class="max-w-md mx-auto p-5">
+
+
+<h2 class="text-3xl font-bold mb-6">
+👤 الملف الشخصي
+</h2>
+
+
+
+<div class="glass rounded-3xl p-6 text-center">
+
+
+
+<img id="photo"
+
+src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+
+class="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-white/20">
+
+
+
+<input
+
+id="photoInput"
+
+type="file"
+
+accept="image/*"
+
+class="w-full mb-5">
+
+
+
+
+
+
+<input
+
+id="name"
+
+placeholder="الاسم الكامل"
+
+class="w-full p-4 mb-3 rounded-xl bg-white/10">
+
+
+
+
+
+<input
+
+id="username"
+
+placeholder="اسم المستخدم"
+
+class="w-full p-4 mb-3 rounded-xl bg-white/10">
+
+
+
+
+
+<input
+
+id="phone"
+
+placeholder="رقم الهاتف"
+
+class="w-full p-4 mb-3 rounded-xl bg-white/10">
+
+
+
+
+
+<input
+
+id="country"
+
+placeholder="الدولة"
+
+class="w-full p-4 mb-3 rounded-xl bg-white/10">
+
+
+
+
+
+<textarea
+
+id="bio"
+
+placeholder="نبذة عنك"
+
+class="w-full p-4 mb-5 rounded-xl bg-white/10">
+
+</textarea>
+
+
+
+
+
+
+<button
+
+onclick="saveProfile()"
+
+class="w-full py-4 rounded-xl gold font-bold">
+
+حفظ التعديلات
+
+</button>
+
+
+
+</div>
+
+
+
+</main>
+
+
+
+
+
+
+
+<script type="module">
+
+
+import {auth,db} from "./firebase.js";
+
+
+import {
+
+onAuthStateChanged
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+
+import {
+
+doc,
+
+getDoc,
+
+updateDoc
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+
+
+let uid="";
+
+
+
+
+
+onAuthStateChanged(auth,async(user)=>{
+
+
+if(!user){
+
+location="login.html";
+
+return;
+
+}
+
+
+
+uid=user.uid;
+
+
+
+let snap=await getDoc(
+
+doc(db,"users",uid)
+
+);
+
+
+
+if(snap.exists()){
+
+
+let data=snap.data();
+
+
+
+name.value=data.name || "";
+
+username.value=data.username || "";
+
+phone.value=data.phone || "";
+
+country.value=data.country || "";
+
+bio.value=data.bio || "";
+
+
+
+if(data.photoURL){
+
+photo.src=data.photoURL;
+
+}
+
+
+
+}
+
+
+
+});
+
+
+
+
+
+
+
+window.saveProfile=async function(){
+
+
+
+await updateDoc(
+
+doc(db,"users",uid),
+
+{
+
+
+name:name.value,
+
+username:username.value,
+
+phone:phone.value,
+
+country:country.value,
+
+bio:bio.value
+
+
+}
+
+);
+
+
+
+alert("تم حفظ البيانات");
+
+
+}
+
+
+
+
+
+</script>
+
+
+
+</body>
+
+</html>
