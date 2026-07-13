@@ -10,19 +10,6 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 
-<script>
-tailwind.config={
-theme:{
-extend:{
-colors:{
-gold:'#e94560',
-success:'#00d09c'
-}
-}
-}
-}
-</script>
-
 
 <style>
 
@@ -33,23 +20,23 @@ font-family:'Cairo',sans-serif;
 }
 
 body{
-background:#0b1120;
+background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
 }
 
 .glass{
-background:rgba(255,255,255,.08);
+background:rgba(255,255,255,.1);
 backdrop-filter:blur(15px);
 border:1px solid rgba(255,255,255,.1);
 }
 
-.gold-gradient{
+.gold{
 background:linear-gradient(135deg,#e94560,#ff6b6b);
 }
 
 </style>
 
-
 </head>
+
 
 
 <body class="text-white min-h-screen">
@@ -59,11 +46,11 @@ background:linear-gradient(135deg,#e94560,#ff6b6b);
 <header class="glass p-5 flex justify-between items-center">
 
 <h1 class="text-3xl font-black">
-Smart <span class="text-gold">X</span>
+Smart <span class="text-red-400">X</span>
 </h1>
 
 
-<button onclick="logout()" class="text-red-400">
+<button onclick="logout()" class="text-red-300">
 خروج
 </button>
 
@@ -74,156 +61,18 @@ Smart <span class="text-gold">X</span>
 
 
 
+
 <main class="max-w-7xl mx-auto p-5">
 
 
 <h2 class="text-3xl font-bold mb-6">
-👑 لوحة الإدارة
+👑 لوحة المدير
 </h2>
 
 
 
 
-
-<!-- الإحصائيات -->
-
-
-<div class="grid md:grid-cols-4 grid-cols-2 gap-4 mb-8">
-
-
-<div class="glass rounded-3xl p-5">
-<p class="text-gray-400">الأعضاء</p>
-<h2 id="usersCount" class="text-3xl font-bold">0</h2>
-</div>
-
-
-<div class="glass rounded-3xl p-5">
-<p class="text-gray-400">الأرصدة</p>
-<h2 id="totalMoney" class="text-3xl font-bold text-success">
-0$
-</h2>
-</div>
-
-
-<div class="glass rounded-3xl p-5">
-<p class="text-gray-400">إيداعات معلقة</p>
-<h2 id="depositCount" class="text-3xl font-bold text-gold">
-0
-</h2>
-</div>
-
-
-<div class="glass rounded-3xl p-5">
-<p class="text-gray-400">سحوبات معلقة</p>
-<h2 id="withdrawCount" class="text-3xl font-bold">
-0
-</h2>
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-<!-- الأعضاء -->
-
-
-<div class="glass rounded-3xl p-6 mb-8">
-
-
-<h2 class="text-2xl font-bold mb-5">
-👥 الأعضاء
-</h2>
-
-
-
-<div class="overflow-x-auto">
-
-
-<table class="w-full text-center">
-
-
-<thead>
-
-<tr class="border-b border-white/20">
-
-<th class="p-3">الاسم</th>
-<th>الهاتف</th>
-<th>الرصيد</th>
-<th>النقاط</th>
-<th>التحكم</th>
-
-</tr>
-
-</thead>
-
-
-<tbody id="usersTable">
-
-</tbody>
-
-
-</table>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<!-- الإيداعات -->
-
-
-<div class="glass rounded-3xl p-6 mb-8">
-
-
-<h2 class="text-2xl font-bold mb-5">
-📥 طلبات الإيداع
-</h2>
-
-
-<div id="deposits"></div>
-
-
-</div>
-
-
-
-
-
-
-
-
-<!-- السحوبات -->
-
-
-<div class="glass rounded-3xl p-6">
-
-
-<h2 class="text-2xl font-bold mb-5">
-📤 طلبات السحب
-</h2>
-
-
-<div id="withdrawals"></div>
-
-
-</div>
-
-
-
+<div id="users" class="space-y-5"></div>
 
 
 
@@ -235,336 +84,209 @@ Smart <span class="text-gold">X</span>
 
 
 
+<script type="module">
 
 
-<script>
+import {auth,db} from "./firebase.js";
 
 
-
-let users =
-JSON.parse(localStorage.getItem("smartUsers")) || [];
-
-
-let deposits =
-JSON.parse(localStorage.getItem("deposits")) || [];
+import {
+onAuthStateChanged,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
-let withdrawals =
-JSON.parse(localStorage.getItem("withdrawals")) || [];
+import {
 
+collection,
+getDocs,
+doc,
+getDoc,
+updateDoc
 
+}
 
-
-
-
-
-function load(){
-
-
-
-let table=document.getElementById("usersTable");
-
-table.innerHTML="";
-
-let money=0;
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
-users.forEach((u,i)=>{
-
-
-money+=Number(u.balance);
 
 
 
-table.innerHTML+=`
-
-<tr class="border-b border-white/10">
-
-<td class="p-3">
-${u.name}
-<br>
-<span class="text-gray-400">
-${u.username}
-</span>
-</td>
+onAuthStateChanged(auth,async(user)=>{
 
 
-<td>
-${u.phone}
-</td>
+if(!user){
+
+location="login.html";
+
+return;
+
+}
 
 
-<td class="text-success">
-${u.balance}$
-</td>
+
+let adminRef=doc(db,"users",user.uid);
+
+let adminSnap=await getDoc(adminRef);
 
 
-<td class="text-gold">
-${u.points}
-</td>
+
+if(!adminSnap.exists() || adminSnap.data().role!="admin"){
 
 
-<td>
+alert("ليس لديك صلاحية الدخول");
+
+location="dashboard.html";
+
+return;
 
 
-<button onclick="addBalance(${i})"
-class="bg-green-600 px-3 py-2 rounded-xl">
-+ رصيد
-</button>
+}
 
 
-<button onclick="addPoints(${i})"
-class="bg-yellow-600 px-3 py-2 rounded-xl">
-+ نقاط
-</button>
 
+loadUsers();
 
-</td>
-
-
-</tr>
-
-`;
 
 });
 
 
-document.getElementById("usersCount").innerHTML=users.length;
 
-document.getElementById("totalMoney").innerHTML=money+"$";
 
 
-document.getElementById("depositCount").innerHTML=
 
-deposits.filter(x=>x.status=="قيد المراجعة").length;
 
+async function loadUsers(){
 
-document.getElementById("withdrawCount").innerHTML=
 
-withdrawals.filter(x=>x.status=="قيد المراجعة").length;
 
+let box=document.getElementById("users");
 
-
-showDeposits();
-
-showWithdrawals();
-
-
-}
-
-
-
-
-
-
-
-
-function addBalance(i){
-
-
-let x=prompt("المبلغ");
-
-
-if(x){
-
-users[i].balance+=Number(x);
-
-save();
-
-}
-
-
-}
-
-
-
-
-
-
-function addPoints(i){
-
-
-let x=prompt("النقاط");
-
-
-if(x){
-
-users[i].points+=Number(x);
-
-save();
-
-}
-
-
-}
-
-
-
-
-
-
-
-function save(){
-
-localStorage.setItem(
-"smartUsers",
-JSON.stringify(users)
-);
-
-load();
-
-}
-
-
-
-
-
-
-
-
-
-function showDeposits(){
-
-
-let box=document.getElementById("deposits");
 
 box.innerHTML="";
 
 
-deposits.forEach((d,i)=>{
+
+let snapshot=await getDocs(collection(db,"users"));
 
 
-box.innerHTML+=`
 
-<div class="glass p-4 rounded-xl mb-3">
-
-المبلغ:
-${d.amount}$
-
-<br>
-
-الطريقة:
-${d.method}
+snapshot.forEach((item)=>{
 
 
-<br>
 
-الحالة:
-${d.status}
+let u=item.data();
 
 
-<br><br>
+let id=item.id;
 
 
-<button onclick="acceptDeposit(${i})"
-class="bg-green-600 px-4 py-2 rounded-xl">
-قبول
+
+
+box.innerHTML += `
+
+
+<div class="glass rounded-3xl p-6">
+
+
+<h2 class="text-2xl font-bold mb-3">
+
+${u.name || "بدون اسم"}
+
+</h2>
+
+
+
+<p>
+📧 ${u.email || ""}
+</p>
+
+
+<p>
+📱 ${u.phone || ""}
+</p>
+
+
+<p class="text-green-400 mt-2">
+
+💰 الرصيد:
+${u.balance || 0}
+
+</p>
+
+
+<p class="text-yellow-400">
+
+⭐ النقاط:
+${u.points || 0}
+
+</p>
+
+
+
+
+
+<div class="grid md:grid-cols-2 gap-3 mt-5">
+
+
+<input
+
+id="bal-${id}"
+
+type="number"
+
+placeholder="إضافة رصيد"
+
+class="p-3 rounded-xl bg-white/10"
+
+
+>
+
+
+
+<button
+
+onclick="addBalance('${id}')"
+
+class="gold rounded-xl font-bold">
+
+إضافة رصيد
+
 </button>
 
 
-<button onclick="rejectDeposit(${i})"
-class="bg-red-600 px-4 py-2 rounded-xl">
-رفض
+
+
+
+<input
+
+id="point-${id}"
+
+type="number"
+
+placeholder="إضافة نقاط"
+
+class="p-3 rounded-xl bg-white/10"
+
+
+>
+
+
+
+<button
+
+onclick="addPoints('${id}')"
+
+class="gold rounded-xl font-bold">
+
+إضافة نقاط
+
 </button>
 
 
 </div>
-
-`;
-
-});
-
-
-}
-
-
-
-
-
-
-
-
-
-function acceptDeposit(i){
-
-
-deposits[i].status="مقبول";
-
-
-saveAll();
-
-
-}
-
-
-
-
-
-
-
-function rejectDeposit(i){
-
-
-deposits[i].status="مرفوض";
-
-
-saveAll();
-
-
-}
-
-
-
-
-
-
-
-
-function showWithdrawals(){
-
-
-let box=document.getElementById("withdrawals");
-
-box.innerHTML="";
-
-
-withdrawals.forEach((w,i)=>{
-
-
-box.innerHTML+=`
-
-<div class="glass p-4 rounded-xl mb-3">
-
-
-المبلغ:
-${w.amount}$
-
-<br>
-
-طريقة:
-${w.method}
-
-
-<br>
-
-الحالة:
-${w.status}
-
-
-<br><br>
-
-
-<button onclick="acceptWithdraw(${i})"
-class="bg-green-600 px-4 py-2 rounded-xl">
-قبول
-</button>
-
-
-<button onclick="rejectWithdraw(${i})"
-class="bg-red-600 px-4 py-2 rounded-xl">
-رفض
-</button>
 
 
 </div>
@@ -572,33 +294,11 @@ class="bg-red-600 px-4 py-2 rounded-xl">
 
 `;
 
+
+
 });
 
 
-}
-
-
-
-
-
-
-
-function acceptWithdraw(i){
-
-withdrawals[i].status="مقبول";
-
-saveAll();
-
-}
-
-
-
-
-function rejectWithdraw(i){
-
-withdrawals[i].status="مرفوض";
-
-saveAll();
 
 }
 
@@ -608,15 +308,44 @@ saveAll();
 
 
 
-function saveAll(){
 
 
-localStorage.setItem("deposits",JSON.stringify(deposits));
-
-localStorage.setItem("withdrawals",JSON.stringify(withdrawals));
+window.addBalance=async function(id){
 
 
-load();
+let value=
+
+Number(document.getElementById("bal-"+id).value);
+
+
+
+if(value<=0)return;
+
+
+
+let ref=doc(db,"users",id);
+
+
+
+let snap=await getDoc(ref);
+
+
+let old=snap.data().balance || 0;
+
+
+
+await updateDoc(ref,{
+
+balance:old+value
+
+});
+
+
+
+alert("تم إضافة الرصيد");
+
+
+loadUsers();
 
 
 }
@@ -626,15 +355,69 @@ load();
 
 
 
-function logout(){
 
-window.location="index.html";
+
+
+window.addPoints=async function(id){
+
+
+let value=
+
+Number(document.getElementById("point-"+id).value);
+
+
+
+if(value<=0)return;
+
+
+
+let ref=doc(db,"users",id);
+
+
+
+let snap=await getDoc(ref);
+
+
+let old=snap.data().points || 0;
+
+
+
+await updateDoc(ref,{
+
+points:old+value
+
+});
+
+
+
+alert("تم إضافة النقاط");
+
+
+loadUsers();
+
 
 }
 
 
 
-load();
+
+
+
+
+
+
+window.logout=function(){
+
+
+signOut(auth);
+
+
+location="login.html";
+
+
+}
+
+
 
 
 
