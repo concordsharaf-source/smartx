@@ -32,34 +32,360 @@ success:'#00d09c'
 font-family:'Cairo',sans-serif;
 }
 
-
 body{
-
 background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
-
 }
-
 
 .glass{
-
 background:rgba(255,255,255,.1);
-
 backdrop-filter:blur(15px);
-
 border:1px solid rgba(255,255,255,.1);
-
 }
-
 
 .gold-gradient{
-
 background:linear-gradient(135deg,#e94560,#ff6b6b);
+}
+
+input{
+outline:none;
+}
+
+</style>
+
+</head>
+
+
+<body class="text-white min-h-screen">
+
+
+
+<header class="glass p-5 flex justify-between items-center">
+
+<h1 class="text-3xl font-black">
+Smart <span class="text-gold">X</span>
+</h1>
+
+
+<button onclick="logout()">
+خروج
+</button>
+
+
+</header>
+
+
+
+
+
+<main class="max-w-6xl mx-auto p-5">
+
+
+<h2 class="text-3xl font-bold mb-6">
+لوحة تحكم المدير 👑
+</h2>
+
+
+
+
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+
+
+<div class="glass rounded-2xl p-5">
+<p class="text-gray-400">الأعضاء</p>
+<h2 class="text-3xl font-bold">1</h2>
+</div>
+
+
+<div class="glass rounded-2xl p-5">
+<p class="text-gray-400">الأرصدة</p>
+<h2 class="text-3xl font-bold text-success">
+$<span id="totalBalance">0</span>
+</h2>
+</div>
+
+
+<div class="glass rounded-2xl p-5">
+<p class="text-gray-400">النقاط</p>
+<h2 class="text-3xl font-bold text-gold">
+<span id="totalPoints">0</span>
+</h2>
+</div>
+
+
+<div class="glass rounded-2xl p-5">
+<p class="text-gray-400">الحالة</p>
+<h2 class="text-3xl">
+نشط
+</h2>
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="grid md:grid-cols-2 gap-6">
+
+
+
+<div class="glass rounded-3xl p-6">
+
+
+<h2 class="text-xl font-bold mb-5">
+إضافة رصيد 💰
+</h2>
+
+
+<input
+id="amount"
+type="number"
+placeholder="المبلغ"
+class="w-full p-4 mb-4 rounded-xl bg-white/10">
+
+
+<button onclick="addBalance()"
+class="w-full py-4 rounded-xl gold-gradient font-bold">
+
+إضافة الرصيد
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+<div class="glass rounded-3xl p-6">
+
+
+<h2 class="text-xl font-bold mb-5">
+إضافة نقاط ⭐
+</h2>
+
+
+<input
+id="points"
+type="number"
+placeholder="عدد النقاط"
+class="w-full p-4 mb-4 rounded-xl bg-white/10">
+
+
+<button onclick="addPoints()"
+class="w-full py-4 rounded-xl gold-gradient font-bold">
+
+إضافة النقاط
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="glass rounded-3xl p-6 mt-6">
+
+
+<h2 class="text-xl font-bold mb-5">
+بيانات المستخدم
+</h2>
+
+
+<p>
+الاسم:
+<span id="username">-</span>
+</p>
+
+
+<p class="mt-3">
+الرصيد:
+<span id="userBalance" class="text-success">0</span> $
+</p>
+
+
+<p class="mt-3">
+النقاط:
+<span id="userPoints" class="text-gold">0</span>
+</p>
+
+
+</div>
+
+
+
+
+
+</main>
+
+
+
+
+
+
+
+<script>
+
+
+let role = localStorage.getItem("userRole");
+
+let user = JSON.parse(localStorage.getItem("smartUser"));
+
+
+
+// السماح للمدير بالدخول
+if(role !== "admin" && !user){
+
+alert("غير مصرح بالدخول");
+
+window.location="login.html";
 
 }
 
 
-input{
 
+
+
+// إذا كان مديرًا وليس لديه بيانات مستخدم
+if(!user){
+
+user = {
+
+name:"المدير",
+
+balance:0,
+
+points:0
+
+};
+
+}
+
+
+
+
+function showData(){
+
+document.getElementById("username").innerHTML=user.name;
+
+document.getElementById("userBalance").innerHTML=user.balance;
+
+document.getElementById("userPoints").innerHTML=user.points;
+
+document.getElementById("totalBalance").innerHTML=user.balance;
+
+document.getElementById("totalPoints").innerHTML=user.points;
+
+}
+
+
+
+showData();
+
+
+
+
+
+
+function addBalance(){
+
+
+let amount = Number(
+document.getElementById("amount").value
+);
+
+
+
+if(amount>0){
+
+user.balance += amount;
+
+save();
+
+alert("تم إضافة الرصيد بنجاح");
+
+}
+
+
+}
+
+
+
+
+
+
+function addPoints(){
+
+
+let points = Number(
+document.getElementById("points").value
+);
+
+
+
+if(points>0){
+
+user.points += points;
+
+save();
+
+alert("تم إضافة النقاط بنجاح");
+
+}
+
+
+}
+
+
+
+
+
+
+function save(){
+
+localStorage.setItem(
+"smartUser",
+JSON.stringify(user)
+);
+
+
+showData();
+
+}
+
+
+
+
+
+
+
+function logout(){
+
+localStorage.clear();
+
+window.location="index.html";
+
+}
+
+
+</script>
+
+
+
+</body>
+
+</html>
 outline:none;
 
 }
