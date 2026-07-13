@@ -33,6 +33,51 @@ background:rgba(255,255,255,.05);
 color:#aaa;
 }
 
+
+.avatar{
+cursor:pointer;
+transition:.3s;
+}
+
+.avatar:hover{
+transform:scale(1.1);
+}
+
+
+.modal{
+
+display:none;
+
+position:fixed;
+
+inset:0;
+
+background:rgba(0,0,0,.7);
+
+z-index:50;
+
+align-items:center;
+
+justify-content:center;
+
+}
+
+
+.modal-box{
+
+background:#16213e;
+
+border-radius:25px;
+
+padding:20px;
+
+width:90%;
+
+max-width:450px;
+
+}
+
+
 </style>
 
 </head>
@@ -41,15 +86,18 @@ color:#aaa;
 <body class="text-white min-h-screen">
 
 
+
 <header class="glass p-5 flex justify-between items-center">
 
 <h1 class="text-3xl font-black">
 Smart <span class="text-red-400">X</span>
 </h1>
 
+
 <a href="dashboard.html" class="text-green-400">
 العودة
 </a>
+
 
 </header>
 
@@ -73,15 +121,15 @@ Smart <span class="text-red-400">X</span>
 <div class="text-center mb-6">
 
 
-<div class="w-28 h-28 rounded-full bg-white/20 mx-auto flex items-center justify-center text-5xl">
+<img id="mainAvatar"
 
-👤
+onclick="openAvatars()"
 
-</div>
+class="w-32 h-32 rounded-full mx-auto bg-white p-2 avatar">
 
 
 <p class="mt-3 text-gray-300">
-صورة الحساب
+اضغط لتغيير الصورة
 </p>
 
 
@@ -106,7 +154,6 @@ class="w-full p-4 mb-4 mt-2 rounded-xl bg-white/10">
 
 
 
-
 <label>
 اسم المستخدم
 </label>
@@ -114,8 +161,6 @@ class="w-full p-4 mb-4 mt-2 rounded-xl bg-white/10">
 <input id="username"
 
 class="w-full p-4 mb-4 mt-2 rounded-xl bg-white/10">
-
-
 
 
 
@@ -134,8 +179,6 @@ class="w-full p-4 mb-4 mt-2 rounded-xl bg-white/10">
 
 
 
-
-
 <label>
 الدولة
 </label>
@@ -148,11 +191,8 @@ class="w-full p-4 mb-4 mt-2 rounded-xl bg-white/10">
 
 
 
-
-
-
 <label>
-نبذة عنك
+نبذة
 </label>
 
 <textarea id="bio"
@@ -166,9 +206,7 @@ class="w-full p-4 mb-5 mt-2 rounded-xl bg-white/10"></textarea>
 
 
 
-
 <div class="locked rounded-xl p-4 mb-3">
-
 
 🔒 البريد الإلكتروني
 
@@ -176,17 +214,12 @@ class="w-full p-4 mb-5 mt-2 rounded-xl bg-white/10"></textarea>
 
 <span id="email"></span>
 
-
 </div>
 
 
 
 
-
-
-
 <div class="locked rounded-xl p-4 mb-3">
-
 
 🔒 رقم العضوية
 
@@ -194,10 +227,7 @@ class="w-full p-4 mb-5 mt-2 rounded-xl bg-white/10"></textarea>
 
 <span id="uid"></span>
 
-
 </div>
-
-
 
 
 
@@ -205,17 +235,13 @@ class="w-full p-4 mb-5 mt-2 rounded-xl bg-white/10"></textarea>
 
 <div class="locked rounded-xl p-4 mb-3">
 
-
 💰 الرصيد
 
 <br>
 
 <span id="balance"></span>
 
-
 </div>
-
-
 
 
 
@@ -223,16 +249,13 @@ class="w-full p-4 mb-5 mt-2 rounded-xl bg-white/10"></textarea>
 
 <div class="locked rounded-xl p-4 mb-5">
 
-
 ⭐ النقاط
 
 <br>
 
 <span id="points"></span>
 
-
 </div>
-
 
 
 
@@ -249,15 +272,70 @@ class="w-full bg-red-500 py-4 rounded-xl font-bold">
 </button>
 
 
-
 <p id="message" class="text-center mt-4"></p>
 
 
 
 </div>
 
-
 </main>
+
+
+
+
+
+
+
+<!-- نافذة الافاتارات -->
+
+
+<div id="avatarModal" class="modal">
+
+
+<div class="modal-box">
+
+
+<h2 class="text-xl font-bold mb-4 text-center">
+
+اختر صورتك
+
+</h2>
+
+
+
+<div id="avatarList"
+
+class="grid grid-cols-4 gap-3">
+
+</div>
+
+
+
+<button onclick="randomAvatar()"
+
+class="w-full mt-5 bg-yellow-600 p-3 rounded-xl">
+
+🎲 اختيار عشوائي
+
+</button>
+
+
+
+<button onclick="closeAvatars()"
+
+class="w-full mt-3 bg-gray-600 p-3 rounded-xl">
+
+إغلاق
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
 
 
 
@@ -281,11 +359,12 @@ onAuthStateChanged
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
-
 import {
 
 doc,
+
 getDoc,
+
 updateDoc
 
 }
@@ -295,7 +374,113 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
-let currentUID="";
+let uid="";
+
+let selectedAvatar="";
+
+
+
+let avatars=[];
+
+
+
+for(let i=1;i<=40;i++){
+
+
+avatars.push(
+
+"https://api.dicebear.com/9.x/personas/svg?seed=SmartX"+i
+
+);
+
+
+}
+
+
+
+
+let box=document.getElementById("avatarList");
+
+
+
+avatars.forEach((img)=>{
+
+
+box.innerHTML+=`
+
+<img src="${img}"
+
+onclick="chooseAvatar('${img}')"
+
+class="w-16 h-16 rounded-full bg-white p-1 avatar">
+
+`;
+
+
+});
+
+
+
+
+
+
+
+
+
+window.openAvatars=function(){
+
+document.getElementById("avatarModal").style.display="flex";
+
+}
+
+
+
+
+window.closeAvatars=function(){
+
+document.getElementById("avatarModal").style.display="none";
+
+}
+
+
+
+
+
+
+
+window.chooseAvatar=function(img){
+
+
+selectedAvatar=img;
+
+
+document.getElementById("mainAvatar").src=img;
+
+
+closeAvatars();
+
+
+}
+
+
+
+
+
+
+
+window.randomAvatar=function(){
+
+
+let img=avatars[Math.floor(Math.random()*avatars.length)];
+
+
+chooseAvatar(img);
+
+
+}
+
+
+
 
 
 
@@ -314,16 +499,11 @@ return;
 }
 
 
-
-currentUID=user.uid;
-
-
-
-let ref=doc(db,"users",currentUID);
+uid=user.uid;
 
 
 
-let snap=await getDoc(ref);
+let snap=await getDoc(doc(db,"users",uid));
 
 
 
@@ -331,7 +511,6 @@ if(snap.exists()){
 
 
 let data=snap.data();
-
 
 
 document.getElementById("name").value=data.name || "";
@@ -348,16 +527,33 @@ document.getElementById("bio").value=data.bio || "";
 
 document.getElementById("email").innerHTML=data.email || user.email;
 
-document.getElementById("uid").innerHTML=currentUID;
+document.getElementById("uid").innerHTML=uid;
 
-document.getElementById("balance").innerHTML=(data.balance || 0)+" $";
+document.getElementById("balance").innerHTML=(data.balance||0)+" $";
 
-document.getElementById("points").innerHTML=data.points || 0;
+document.getElementById("points").innerHTML=data.points||0;
 
+
+
+if(data.photoURL){
+
+selectedAvatar=data.photoURL;
+
+document.getElementById("mainAvatar").src=data.photoURL;
+
+
+}else{
+
+
+selectedAvatar=avatars[0];
+
+document.getElementById("mainAvatar").src=avatars[0];
 
 
 }
 
+
+}
 
 
 });
@@ -370,18 +566,14 @@ document.getElementById("points").innerHTML=data.points || 0;
 
 
 
-window.saveProfile=async function(){
 
+window.saveProfile=async function(){
 
 
 try{
 
 
-await updateDoc(
-
-doc(db,"users",currentUID),
-
-{
+await updateDoc(doc(db,"users",uid),{
 
 
 name:document.getElementById("name").value,
@@ -392,36 +584,30 @@ phone:document.getElementById("phone").value,
 
 country:document.getElementById("country").value,
 
-bio:document.getElementById("bio").value
+bio:document.getElementById("bio").value,
+
+photoURL:selectedAvatar
+
+
+});
+
+
+
+document.getElementById("message").innerHTML="✅ تم حفظ التعديلات";
 
 
 }
 
-);
+catch(e){
 
 
-
-document.getElementById("message").innerHTML=
-
-"✅ تم حفظ التعديلات بنجاح";
-
-
-}
-
-catch(error){
-
-
-document.getElementById("message").innerHTML=
-
-"❌ حدث خطأ: "+error.message;
+document.getElementById("message").innerHTML="❌ "+e.message;
 
 
 }
 
 
-
 }
-
 
 
 
