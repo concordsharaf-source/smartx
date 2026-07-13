@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smart X - المستقبل المالي</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+
+*{
+font-family:'Cairo',sans-serif;
+box-sizing:border-box;
+}
+
+
+body{
+
+margin:0;
+
+background:#050b18;
+
+color:white;
+
+overflow-x:hidden;
+
+}
+
+
+
+/* خلفية متحركة */
+
+
+.bg-light{
+
+position:fixed;
+
+width:500px;
+
+height:500px;
+
+border-radius:50%;
+
+filter:blur(120px);
+
+opacity:.35;
+
+animation:move 10s infinite alternate;
+
+}
+
+
+
+.light1{
+
+background:#00ff99;
+
+top:-150px;
+
+right:-150px;
+
+}
+
+
+
+.light2{
+
+background:#0066ff;
+
+bottom:-150px;
+
+left:-150px;
+
+animation-delay:3s;
+
+}
+
+
+
+@keyframes move{
+
+from{
+
+transform:translate(0,0);
+
+}
+
+
+to{
+
+transform:translate(100px,80px);
+
+}
+
+}
+
+
+
+
+
+
+
+.glass{
+
+background:rgba(255,255,255,.08);
+
+border:1px solid rgba(255,255,255,.15);
+
+backdrop-filter:blur(15px);
+
+}
+
+
+
+
+.glow{
+
+box-shadow:0 0 30px rgba(0,255,150,.3);
+
+}
+
+
+
+
+.number{
+
+font-size:35px;
+
+font-weight:900;
+
+}
+
+
+
+
+
+.pulse{
+
+animation:pulse 2s infinite;
+
+}
+
+
+
+@keyframes pulse{
+
+
+50%{
+
+transform:scale(1.05);
+
+}
+
+
+}
+
+
+
+
+
+
+
+</style>
+
+</head>
+
+
+
+
+<body>
+
+
+
+
+<div class="bg-light light1"></div>
+
+<div class="bg-light light2"></div>
+
+
+
+
+
+<header class="relative z-10 p-5 flex justify-between items-center max-w-6xl mx-auto">
+
+
+<div>
+
+<h1 class="text-4xl font-black">
+
+Smart
+
+<span class="text-green-400">
+
+X
+
+</span>
+
+</h1>
+
+
+<p class="text-gray-400">
+
+المستقبل المالي يبدأ هنا
+
+</p>
+
+
+</div>
+
+
+
+<div class="flex gap-3">
+
+
+<a href="login.html"
+
+class="glass px-5 py-3 rounded-xl">
+
+دخول
+
+</a>
+
+
+
+<a href="register.html"
+
+class="bg-green-500 text-black px-5 py-3 rounded-xl font-bold">
+
+إنشاء حساب
+
+</a>
+
+
+</div>
+
+
+
+</header>
+
+
+
+
+
+
+
+<section class="relative z-10 text-center max-w-5xl mx-auto px-5 pt-16">
+
+
+<h2 class="text-5xl md:text-7xl font-black leading-tight">
+
+
+منصة ذكية لإدارة أموالك
+
+<br>
+
+<span class="text-green-400">
+
+بشكل أسرع وأفضل
+
+</span>
+
+
+</h2>
+
+
+
+<p class="text-gray-300 text-xl mt-6">
+
+نظام حديث يجمع بين الأمان، التحليلات، وإدارة الحساب في مكان واحد.
+
+</p>
+
+
+
+
+
+<button class="mt-8 bg-green-500 text-black px-10 py-4 rounded-2xl text-xl font-bold pulse">
+
+
+ابدأ الآن 🚀
+
+
+</button>
+
+
+
+
+</section>
+
+
+
+
+
+
+<section class="relative z-10 grid md:grid-cols-3 gap-5 max-w-6xl mx-auto px-5 mt-16">
+
+
+
+<div class="glass rounded-3xl p-6 text-center glow">
+
+
+<div class="text-green-400 text-4xl">
+
+💰
+
+</div>
+
+
+<p class="text-gray-300 mt-3">
+
+إجمالي النشاط
+
+</p>
+
+
+<div id="totalMoney" class="number">
+
+0
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="glass rounded-3xl p-6 text-center">
+
+
+<div class="text-blue-400 text-4xl">
+
+👥
+
+</div>
+
+
+<p class="text-gray-300 mt-3">
+
+المستخدمون النشطون
+
+</p>
+
+
+<div id="users" class="number">
+
+0
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="glass rounded-3xl p-6 text-center">
+
+
+<div class="text-yellow-400 text-4xl">
+
+⚡
+
+</div>
+
+
+<p class="text-gray-300 mt-3">
+
+عمليات اليوم
+
+</p>
+
+
+<div id="operations" class="number">
+
+0
+
+</div>
+
+
+</div>
+
+
+
+
+</section>
+
+<section class="relative z-10 max-w-6xl mx-auto px-5 mt-16">
+
+
+<div class="glass rounded-3xl p-6">
+
+
+<div class="flex justify-between items-center mb-5">
+
+
+<h3 class="text-2xl font-bold">
+
+📈 حركة المنصة
+
+</h3>
+
+
+<div class="text-green-400">
+
+● مباشر
+
+</div>
+
+
+</div>
+
+
+
+<canvas id="chart"></canvas>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<section class="relative z-10 max-w-6xl mx-auto px-5 mt-10">
+
+
+<div class="glass rounded-2xl p-4 overflow-hidden">
+
+
+<div id="activity"
+
+class="whitespace-nowrap text-green-300">
+
+
+🟢 انضمام عضو جديد • تم تحديث النظام • عملية ناجحة • مكافأة جديدة •
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section class="relative z-10 max-w-6xl mx-auto px-5 mt-16">
+
+
+<h2 class="text-3xl font-bold text-center mb-8">
+
+لماذا Smart X ؟
+
+</h2>
+
+
+
+<div class="grid md:grid-cols-4 gap-5">
+
+
+
+
+
+<div class="glass rounded-3xl p-6 text-center">
+
+
+<div class="text-4xl">
+
+🛡️
+
+</div>
+
+
+<h3 class="mt-4 font-bold">
+
+الأمان
+
+</h3>
+
+
+<p class="text-gray-400 mt-2">
+
+حماية الحساب والبيانات بأحدث التقنيات.
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="glass rounded-3xl p-6 text-center">
+
+
+<div class="text-4xl">
+
+📊
+
+</div>
+
+
+<h3 class="mt-4 font-bold">
+
+التحليلات
+
+</h3>
+
+
+<p class="text-gray-400 mt-2">
+
+تقارير وإحصائيات تساعدك على المتابعة.
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="glass rounded-3xl p-6 text-center">
+
+
+<div class="text-4xl">
+
+👥
+
+</div>
+
+
+<h3 class="mt-4 font-bold">
+
+الدعوات
+
+</h3>
+
+
+<p class="text-gray-400 mt-2">
+
+نظام إحالة وإدارة شبكة المستخدمين.
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="glass rounded-3xl p-6 text-center">
+
+
+<div class="text-4xl">
+
+⚡
+
+</div>
+
+
+<h3 class="mt-4 font-bold">
+
+السرعة
+
+</h3>
+
+
+<p class="text-gray-400 mt-2">
+
+واجهة حديثة وسريعة على الهاتف.
+
+</p>
+
+
+</div>
+
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<footer class="relative z-10 text-center mt-20 p-8 text-gray-400">
+
+
+<p>
+
+© Smart X - جميع الحقوق محفوظة
+
+</p>
+
+
+</footer>
+
+
+
+
+
+
+
+
+
+<script>
+
+
+// عدادات متحركة
+
+
+function animateNumber(id,target){
+
+
+let value=0;
+
+
+let el=document.getElementById(id);
+
+
+
+let timer=setInterval(()=>{
+
+
+value += Math.ceil(target/80);
+
+
+
+if(value>=target){
+
+value=target;
+
+clearInterval(timer);
+
+}
+
+
+el.innerHTML=value.toLocaleString();
+
+
+
+},30);
+
+
+
+}
+
+
+
+
+
+animateNumber("totalMoney",2483280);
+
+animateNumber("users",4283);
+
+animateNumber("operations",17392);
+
+
+
+
+
+
+
+
+
+// الرسم البياني المتحرك
+
+
+
+const ctx=document.getElementById("chart");
+
+
+
+let data=[20,35,30,60,45,80,70,100];
+
+
+
+let chart=new Chart(ctx,{
+
+
+type:"line",
+
+
+data:{
+
+
+labels:["1","2","3","4","5","6","7","8"],
+
+
+
+datasets:[{
+
+label:"Smart X",
+
+data:data,
+
+
+borderColor:"#00ff99",
+
+backgroundColor:"rgba(0,255,150,.15)",
+
+
+fill:true,
+
+
+tension:.4
+
+
+}]
+
+
+},
+
+
+
+options:{
+
+
+responsive:true,
+
+
+plugins:{
+
+
+legend:{
+
+
+display:false
+
+
+}
+
+
+},
+
+
+scales:{
+
+
+y:{
+
+
+display:false
+
+
+},
+
+
+x:{
+
+
+display:false
+
+
+}
+
+
+}
+
+
+}
+
+
+
+});
+
+
+
+
+
+
+setInterval(()=>{
+
+
+data.shift();
+
+
+
+data.push(
+
+Math.floor(Math.random()*80)+20
+
+);
+
+
+
+chart.data.datasets[0].data=data;
+
+
+chart.update();
+
+
+
+},2000);
+
+
+
+
+
+
+
+
+
+// حركة شريط النشاط
+
+
+
+let text=document.getElementById("activity");
+
+
+let pos=0;
+
+
+setInterval(()=>{
+
+
+pos--;
+
+
+text.style.transform=
+
+`translateX(${pos}px)`;
+
+
+if(Math.abs(pos)>text.offsetWidth){
+
+
+pos=window.innerWidth;
+
+
+}
+
+
+},30);
+
+
+
+</script>
+
+
+</body>
+
+</html>
