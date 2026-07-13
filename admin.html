@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smart X - لوحة المدير</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<div class="dashboard">
+
+
+<h1>Smart X</h1>
+
+<h2>لوحة المدير</h2>
+
+
+<div class="card">
+
+<h3>إضافة رصيد لعضو</h3>
+
+
+<input type="text" id="adminUser" placeholder="اسم المستخدم">
+
+
+<input type="number" id="addBalance" placeholder="المبلغ">
+
+
+<button onclick="addUserBalance()">
+إضافة الرصيد
+</button>
+
+
+</div>
+
+
+
+
+<div class="card">
+
+<h3>إضافة نقاط</h3>
+
+
+<input type="text" id="pointsUser" placeholder="اسم المستخدم">
+
+
+<input type="number" id="addPoints" placeholder="عدد النقاط">
+
+
+<button onclick="addUserPoints()">
+إضافة النقاط
+</button>
+
+
+</div>
+
+
+
+
+<div class="card">
+
+<h3>قائمة الأعضاء</h3>
+
+
+<div id="usersList">
+
+</div>
+
+
+</div>
+
+
+
+<button onclick="logout()">
+تسجيل الخروج
+</button>
+
+
+
+</div>
+
+
+
+<script src="script.js"></script>
+
+
+<script>
+
+loadUsers();
+
+</script>
+
+
+</body>
+
+</html>
