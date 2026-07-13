@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smart X - إنشاء حساب</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+tailwind.config = {
+theme:{
+extend:{
+colors:{
+gold:'#e94560',
+success:'#00d09c'
+}
+}
+}
+}
+</script>
+
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+*{
+font-family:'Cairo',sans-serif;
+}
+
+
+body{
+
+background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
+
+}
+
+
+.glass{
+
+background:rgba(255,255,255,.1);
+
+backdrop-filter:blur(15px);
+
+border:1px solid rgba(255,255,255,.1);
+
+}
+
+
+.gold-gradient{
+
+background:linear-gradient(135deg,#e94560,#ff6b6b);
+
+}
+
+
+</style>
+
+</head>
+
+
+<body class="min-h-screen text-white flex items-center justify-center px-5">
+
+
+
+<div class="w-full max-w-md">
+
+
+
+<div class="text-center mb-8">
+
+
+<h1 class="text-5xl font-black">
+
+سمارت
+
+<span class="text-gold">
+
+إكس
+
+</span>
+
+</h1>
+
+
+<p class="text-gray-300 mt-3">
+
+إنشاء حساب جديد
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+<div class="glass rounded-3xl p-8 shadow-2xl">
+
+
+
+<h2 class="text-2xl font-bold text-center mb-6">
+
+انضم إلى Smart X
+
+</h2>
+
+
+
+
+<input
+
+id="fullname"
+
+type="text"
+
+placeholder="الاسم الكامل"
+
+class="w-full p-4 mb-4 rounded-xl bg-white/10 border border-white/10 outline-none"
+
+>
+
+
+
+
+<input
+
+id="username"
+
+type="text"
+
+placeholder="اسم المستخدم"
+
+class="w-full p-4 mb-4 rounded-xl bg-white/10 border border-white/10 outline-none"
+
+>
+
+
+
+
+<input
+
+id="password"
+
+type="password"
+
+placeholder="كلمة المرور"
+
+class="w-full p-4 mb-4 rounded-xl bg-white/10 border border-white/10 outline-none"
+
+>
+
+
+
+
+<input
+
+id="invite"
+
+type="text"
+
+placeholder="كود الدعوة (اختياري)"
+
+class="w-full p-4 mb-6 rounded-xl bg-white/10 border border-white/10 outline-none"
+
+>
+
+
+
+
+<button
+
+onclick="register()"
+
+class="w-full py-4 rounded-xl gold-gradient font-bold text-lg">
+
+إنشاء الحساب
+
+</button>
+
+
+
+
+<p class="text-center mt-6 text-gray-300">
+
+
+لديك حساب؟
+
+
+<a href="login.html"
+
+class="text-success font-bold">
+
+تسجيل الدخول
+
+</a>
+
+
+</p>
+
+
+
+</div>
+
+
+
+
+
+<div class="text-center mt-8 text-gray-400 text-sm">
+
+Smart X © 2026
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<script>
+
+
+function register(){
+
+
+
+let fullname =
+document.getElementById("fullname").value;
+
+
+let username =
+document.getElementById("username").value;
+
+
+let password =
+document.getElementById("password").value;
+
+
+let invite =
+document.getElementById("invite").value;
+
+
+
+if(!fullname || !username || !password){
+
+
+alert("يرجى تعبئة البيانات");
+
+return;
+
+
+}
+
+
+
+
+
+let userData={
+
+
+name:fullname,
+
+username:username,
+
+password:password,
+
+balance:0,
+
+points:0,
+
+code:"SMART-"+Math.floor(1000+Math.random()*9000)
+
+
+};
+
+
+
+
+
+localStorage.setItem(
+
+"smartUser",
+
+JSON.stringify(userData)
+
+);
+
+
+
+alert("تم إنشاء الحساب بنجاح");
+
+
+window.location="login.html";
+
+
+}
+
+
+
+</script>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>سمارت إكس - منصة التداول الذكية</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+tailwind.config = {
+theme:{
+extend:{
+colors:{
+gold:'#e94560',
+success:'#00d09c'
+}
+}
+}
+}
+</script>
+
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+*{
+font-family:'Cairo',sans-serif;
+}
+
+
+body{
+
+background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
+
+}
+
+
+.glass{
+
+background:rgba(255,255,255,.1);
+
+backdrop-filter:blur(12px);
+
+border:1px solid rgba(255,255,255,.1);
+
+}
+
+
+.gold-gradient{
+
+background:linear-gradient(135deg,#e94560,#ff6b6b);
+
+}
+
+</style>
+
+</head>
+
+
+<body class="text-white min-h-screen">
+
+
+
+<!-- القائمة -->
+
+<nav class="fixed top-0 w-full z-50 glass">
+
+<div class="max-w-7xl mx-auto px-5 py-4 flex justify-between items-center">
+
+
+<h1 class="text-3xl font-black">
+
+سمارت
+
+<span class="text-gold">
+
+إكس
+
+</span>
+
+</h1>
+
+
+
+<div class="flex gap-3">
+
+
+<a href="login.html"
+class="px-5 py-2 rounded-xl border border-gold text-gold">
+
+دخول
+
+</a>
+
+
+
+<a href="register.html"
+class="px-5 py-2 rounded-xl gold-gradient">
+
+تسجيل
+
+</a>
+
+
+</div>
+
+
+</div>
+
+</nav>
+
+
+
+
+
+<!-- البداية -->
+
+<section class="pt-36 px-5">
+
+<div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+
+
+
+<div>
+
+
+<h1 class="text-5xl md:text-6xl font-black leading-tight">
+
+تداول بذكاء مع
+
+<span class="text-gold">
+
+سمارت إكس
+
+</span>
+
+</h1>
+
+
+
+<p class="text-gray-300 text-xl mt-6">
+
+منصة تداول تجريبية ذكية لإدارة المحافظ،
+النقاط، ونظام الدعوات.
+
+</p>
+
+
+
+
+<div class="mt-8 flex gap-4">
+
+
+<a href="register.html"
+
+class="px-8 py-4 rounded-2xl gold-gradient font-bold text-lg">
+
+ابدأ الآن
+
+</a>
+
+
+<a href="login.html"
+
+class="px-8 py-4 rounded-2xl glass">
+
+تسجيل الدخول
+
+</a>
+
+
+</div>
+
+
+
+
+
+<div class="flex gap-8 mt-12">
+
+
+<div>
+
+<h2 class="text-3xl font-bold text-success">
+
+50K+
+
+</h2>
+
+<p class="text-gray-400">
+
+مستخدم
+
+</p>
+
+</div>
+
+
+
+<div>
+
+<h2 class="text-3xl font-bold text-gold">
+
+10M$
+
+</h2>
+
+<p class="text-gray-400">
+
+حجم التداول
+
+</p>
+
+</div>
+
+
+
+
+<div>
+
+<h2 class="text-3xl font-bold">
+
+24/7
+
+</h2>
+
+<p class="text-gray-400">
+
+دعم
+
+</p>
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- بطاقة التداول -->
+
+
+<div class="glass rounded-3xl p-8">
+
+
+<div class="flex justify-between">
+
+<span>
+
+BTC/USDT
+
+</span>
+
+
+<span class="text-success">
+
++2.45%
+
+</span>
+
+
+</div>
+
+
+
+
+<h2 class="text-5xl font-black mt-5">
+
+$67,432
+
+</h2>
+
+
+
+
+<div class="mt-8 h-40">
+
+
+<svg viewBox="0 0 400 150"
+class="w-full h-full">
+
+
+<path d="M0 120 Q80 90 150 100 T250 50 T400 20"
+
+stroke="#00d09c"
+
+stroke-width="4"
+
+fill="none"/>
+
+
+</svg>
+
+
+</div>
+
+
+
+<div class="grid grid-cols-3 gap-3 mt-5">
+
+
+<div class="glass p-3 rounded-xl text-center">
+
+شراء
+
+</div>
+
+
+<div class="glass p-3 rounded-xl text-center">
+
+بيع
+
+</div>
+
+
+<div class="glass p-3 rounded-xl text-center">
+
+محفظة
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+</div>
+
+</section>
+
+
+
+
+
+
+<!-- المميزات -->
+
+
+<section class="py-20 px-5">
+
+
+<div class="max-w-6xl mx-auto">
+
+
+<h2 class="text-4xl font-black text-center">
+
+مميزات
+
+<span class="text-gold">
+
+Smart X
+
+</span>
+
+</h2>
+
+
+
+
+<div class="grid md:grid-cols-3 gap-5 mt-10">
+
+
+
+<div class="glass rounded-3xl p-6">
+
+<h3 class="text-xl font-bold">
+
+🔒 الأمان
+
+</h3>
+
+<p class="text-gray-400 mt-3">
+
+حماية الحسابات وإدارة المستخدمين.
+
+</p>
+
+</div>
+
+
+
+
+<div class="glass rounded-3xl p-6">
+
+<h3 class="text-xl font-bold">
+
+🎁 نظام الدعوات
+
+</h3>
+
+<p class="text-gray-400 mt-3">
+
+اكسب نقاط من خلال دعوة الآخرين.
+
+</p>
+
+</div>
+
+
+
+
+<div class="glass rounded-3xl p-6">
+
+<h3 class="text-xl font-bold">
+
+📊 التحليلات
+
+</h3>
+
+<p class="text-gray-400 mt-3">
+
+لوحات متابعة وتقارير.
+
+</p>
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+</section>
+
+
+
+
+
+<footer class="text-center py-8 text-gray-400">
+
+Smart X © 2026
+
+</footer>
+
+
+
+</body>
+
+</html>
