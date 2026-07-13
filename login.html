@@ -8,154 +8,73 @@
 
 <title>Smart X - تسجيل الدخول</title>
 
-
 <script src="https://cdn.tailwindcss.com"></script>
-
-
-<script>
-
-tailwind.config={
-theme:{
-extend:{
-colors:{
-gold:'#e94560',
-success:'#00d09c'
-}
-}
-}
-}
-
-</script>
-
 
 <style>
 
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
 
-
 *{
 font-family:'Cairo',sans-serif;
 }
 
-
 body{
-
 background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
-
 }
-
 
 .glass{
-
 background:rgba(255,255,255,.1);
-
 backdrop-filter:blur(15px);
-
 border:1px solid rgba(255,255,255,.1);
-
 }
 
-
-.gold-gradient{
-
+.gold{
 background:linear-gradient(135deg,#e94560,#ff6b6b);
-
 }
-
 
 input{
-
 outline:none;
-
 }
 
 </style>
 
-
 </head>
 
 
-
-
-
-<body class="min-h-screen text-white flex items-center justify-center px-5">
-
-
-
-
+<body class="min-h-screen text-white flex items-center justify-center p-5">
 
 
 <div class="w-full max-w-md">
 
 
-
-
-
-<div class="text-center mb-7">
-
+<div class="text-center mb-6">
 
 <h1 class="text-5xl font-black">
-
-Smart
-
-<span class="text-gold">
-
-X
-
-</span>
-
+Smart <span class="text-red-400">X</span>
 </h1>
 
-
 <p class="text-gray-300 mt-3">
-
 تسجيل الدخول إلى حسابك
-
 </p>
-
 
 </div>
 
 
 
-
-
-
-
-
-
-<div class="glass rounded-3xl p-8">
-
-
-
-
-
-<h2 class="text-2xl font-bold text-center mb-6">
-
-دخول الأعضاء
-
-</h2>
-
-
-
-
-
+<div class="glass rounded-3xl p-7">
 
 
 <input
 
-id="login"
+id="email"
 
-type="text"
+type="email"
 
-placeholder="اسم المستخدم أو البريد الإلكتروني"
+placeholder="البريد الإلكتروني"
 
 class="w-full p-4 mb-4 rounded-xl bg-white/10"
 
 >
-
-
-
 
 
 
@@ -175,16 +94,11 @@ class="w-full p-4 mb-6 rounded-xl bg-white/10"
 
 
 
-
-
-
-
-
 <button
 
-onclick="loginUser()"
+onclick="login()"
 
-class="w-full py-4 rounded-xl gold-gradient font-bold text-lg">
+class="w-full py-4 rounded-xl gold font-bold">
 
 دخول
 
@@ -193,30 +107,35 @@ class="w-full py-4 rounded-xl gold-gradient font-bold text-lg">
 
 
 
+<p class="text-center mt-5">
 
+<a href="#" onclick="resetPassword()" class="text-green-400">
 
-
-
-<p class="text-center mt-6">
-
-
-ليس لديك حساب؟
-
-
-<a href="register.html"
-
-class="text-success font-bold">
-
-إنشاء حساب
+نسيت كلمة المرور؟
 
 </a>
-
 
 </p>
 
 
 
 
+<p class="text-center mt-4">
+
+ليس لديك حساب؟
+
+<a href="register.html" class="text-red-400">
+
+إنشاء حساب
+
+</a>
+
+</p>
+
+
+
+</div>
+
 
 </div>
 
@@ -224,30 +143,32 @@ class="text-success font-bold">
 
 
 
-
-</div>
-
+<script type="module">
 
 
+import { auth } from "./firebase.js";
 
+import {
 
+signInWithEmailAndPassword,
 
+sendPasswordResetEmail
 
+}
 
-
-<script>
-
-
-
-
-
-function loginUser(){
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 
-let loginValue =
 
-document.getElementById("login").value.trim();
+
+window.login = async function(){
+
+
+
+let email =
+
+document.getElementById("email").value;
 
 
 
@@ -257,71 +178,20 @@ document.getElementById("password").value;
 
 
 
+try{
 
 
+let userCredential =
 
-if(!loginValue || !password){
+await signInWithEmailAndPassword(
 
+auth,
 
-alert("أدخل بيانات الدخول");
+email,
 
-
-return;
-
-
-}
-
-
-
-
-
-
-
-let users =
-
-JSON.parse(localStorage.getItem("smartUsers")) || [];
-
-
-
-
-
-
-
-let user =
-
-users.find(u =>
-
-(u.username === loginValue ||
-
-u.email === loginValue)
-
-&&
-
-u.password === password
+password
 
 );
-
-
-
-
-
-
-
-
-if(!user){
-
-
-alert("بيانات الدخول غير صحيحة");
-
-
-return;
-
-
-}
-
-
-
-
 
 
 
@@ -329,21 +199,34 @@ localStorage.setItem(
 
 "smartUser",
 
-JSON.stringify(user)
+JSON.stringify({
+
+email:userCredential.user.email,
+
+uid:userCredential.user.uid
+
+})
 
 );
-
-
-
 
 
 
 alert("تم تسجيل الدخول بنجاح");
 
 
-
 window.location="dashboard.html";
 
+
+
+}
+
+catch(error){
+
+
+alert("البريد الإلكتروني أو كلمة المرور غير صحيحة");
+
+
+}
 
 
 
@@ -352,10 +235,62 @@ window.location="dashboard.html";
 
 
 
+
+
+window.resetPassword = async function(){
+
+
+
+let email =
+
+document.getElementById("email").value;
+
+
+
+if(!email){
+
+alert("اكتب البريد الإلكتروني أولاً");
+
+return;
+
+}
+
+
+
+try{
+
+
+await sendPasswordResetEmail(
+
+auth,
+
+email
+
+);
+
+
+
+alert("تم إرسال رابط تغيير كلمة المرور إلى بريدك");
+
+
+}
+
+catch(error){
+
+
+alert(error.message);
+
+
+}
+
+
+
+}
+
+
+
+
 </script>
-
-
-
 
 
 </body>
