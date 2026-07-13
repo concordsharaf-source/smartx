@@ -6,10 +6,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Smart X - لوحة المدير</title>
+<title>Smart X - تسجيل الدخول</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-
 
 <style>
 
@@ -33,51 +32,93 @@ border:1px solid rgba(255,255,255,.1);
 background:linear-gradient(135deg,#e94560,#ff6b6b);
 }
 
+input{
+outline:none;
+}
+
 </style>
 
 </head>
 
 
-
-<body class="text-white min-h-screen">
-
+<body class="min-h-screen text-white flex items-center justify-center p-5">
 
 
-<header class="glass p-5 flex justify-between items-center">
+<div class="w-full max-w-md">
 
-<h1 class="text-3xl font-black">
+
+<div class="text-center mb-6">
+
+<h1 class="text-5xl font-black">
 Smart <span class="text-red-400">X</span>
 </h1>
 
+<p class="text-gray-300 mt-3">
+تسجيل الدخول
+</p>
 
-<button onclick="logout()" class="text-red-300">
-خروج
+</div>
+
+
+
+
+<div class="glass rounded-3xl p-7">
+
+
+<input id="email"
+type="email"
+placeholder="البريد الإلكتروني"
+class="w-full p-4 mb-4 rounded-xl bg-white/10">
+
+
+
+<input id="password"
+type="password"
+placeholder="كلمة المرور"
+class="w-full p-4 mb-6 rounded-xl bg-white/10">
+
+
+
+<button onclick="login()"
+class="w-full py-4 rounded-xl gold font-bold">
+
+دخول
+
 </button>
 
 
-</header>
+
+<p class="text-center mt-5">
+
+<a onclick="resetPassword()" href="#"
+class="text-green-400">
+
+نسيت كلمة المرور؟
+
+</a>
+
+</p>
 
 
 
+<p class="text-center mt-4">
+
+ليس لديك حساب؟
+
+<a href="register.html" class="text-red-400">
+
+إنشاء حساب
+
+</a>
+
+</p>
 
 
 
-<main class="max-w-7xl mx-auto p-5">
+</div>
 
 
-<h2 class="text-3xl font-bold mb-6">
-👑 لوحة المدير
-</h2>
-
-
-
-
-<div id="users" class="space-y-5"></div>
-
-
-
-</main>
-
+</div>
 
 
 
@@ -91,19 +132,22 @@ import {auth,db} from "./firebase.js";
 
 
 import {
-onAuthStateChanged,
-signOut
+
+signInWithEmailAndPassword,
+
+sendPasswordResetEmail
+
 }
+
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 
 
 import {
 
-collection,
-getDocs,
 doc,
-getDoc,
-updateDoc
+
+getDoc
 
 }
 
@@ -114,12 +158,114 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
-onAuthStateChanged(auth,async(user)=>{
+window.login = async function(){
 
 
-if(!user){
 
-location="login.html";
+let email =
+document.getElementById("email").value;
+
+
+
+let password =
+document.getElementById("password").value;
+
+
+
+try{
+
+
+let result = await signInWithEmailAndPassword(
+
+auth,
+
+email,
+
+password
+
+);
+
+
+
+let uid = result.user.uid;
+
+
+
+let userDoc = await getDoc(
+
+doc(db,"users",uid)
+
+);
+
+
+
+if(userDoc.exists()){
+
+
+let data=userDoc.data();
+
+
+
+if(data.role === "admin"){
+
+
+window.location="admin.html";
+
+
+}else{
+
+
+window.location="dashboard.html";
+
+
+}
+
+
+
+}else{
+
+
+window.location="dashboard.html";
+
+
+}
+
+
+
+
+}
+
+catch(error){
+
+
+alert("البريد الإلكتروني أو كلمة المرور غير صحيحة");
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+window.resetPassword = async function(){
+
+
+
+let email =
+document.getElementById("email").value;
+
+
+
+if(!email){
+
+alert("اكتب البريد الإلكتروني أولاً");
 
 return;
 
@@ -127,301 +273,40 @@ return;
 
 
 
-let adminRef=doc(db,"users",user.uid);
-
-let adminSnap=await getDoc(adminRef);
+try{
 
 
+await sendPasswordResetEmail(
 
-if(!adminSnap.exists() || adminSnap.data().role!="admin"){
+auth,
+
+email
+
+);
 
 
-alert("ليس لديك صلاحية الدخول");
 
-location="dashboard.html";
+alert("تم إرسال رابط تغيير كلمة المرور إلى بريدك");
 
-return;
+
+}
+
+catch(error){
+
+
+alert(error.message);
 
 
 }
 
 
 
-loadUsers();
-
-
-});
-
-
-
-
-
-
-
-async function loadUsers(){
-
-
-
-let box=document.getElementById("users");
-
-
-box.innerHTML="";
-
-
-
-let snapshot=await getDocs(collection(db,"users"));
-
-
-
-snapshot.forEach((item)=>{
-
-
-
-let u=item.data();
-
-
-let id=item.id;
-
-
-
-
-box.innerHTML += `
-
-
-<div class="glass rounded-3xl p-6">
-
-
-<h2 class="text-2xl font-bold mb-3">
-
-${u.name || "بدون اسم"}
-
-</h2>
-
-
-
-<p>
-📧 ${u.email || ""}
-</p>
-
-
-<p>
-📱 ${u.phone || ""}
-</p>
-
-
-<p class="text-green-400 mt-2">
-
-💰 الرصيد:
-${u.balance || 0}
-
-</p>
-
-
-<p class="text-yellow-400">
-
-⭐ النقاط:
-${u.points || 0}
-
-</p>
-
-
-
-
-
-<div class="grid md:grid-cols-2 gap-3 mt-5">
-
-
-<input
-
-id="bal-${id}"
-
-type="number"
-
-placeholder="إضافة رصيد"
-
-class="p-3 rounded-xl bg-white/10"
-
-
->
-
-
-
-<button
-
-onclick="addBalance('${id}')"
-
-class="gold rounded-xl font-bold">
-
-إضافة رصيد
-
-</button>
-
-
-
-
-
-<input
-
-id="point-${id}"
-
-type="number"
-
-placeholder="إضافة نقاط"
-
-class="p-3 rounded-xl bg-white/10"
-
-
->
-
-
-
-<button
-
-onclick="addPoints('${id}')"
-
-class="gold rounded-xl font-bold">
-
-إضافة نقاط
-
-</button>
-
-
-</div>
-
-
-</div>
-
-
-`;
-
-
-
-});
-
-
-
 }
-
-
-
-
-
-
-
-
-
-window.addBalance=async function(id){
-
-
-let value=
-
-Number(document.getElementById("bal-"+id).value);
-
-
-
-if(value<=0)return;
-
-
-
-let ref=doc(db,"users",id);
-
-
-
-let snap=await getDoc(ref);
-
-
-let old=snap.data().balance || 0;
-
-
-
-await updateDoc(ref,{
-
-balance:old+value
-
-});
-
-
-
-alert("تم إضافة الرصيد");
-
-
-loadUsers();
-
-
-}
-
-
-
-
-
-
-
-
-
-window.addPoints=async function(id){
-
-
-let value=
-
-Number(document.getElementById("point-"+id).value);
-
-
-
-if(value<=0)return;
-
-
-
-let ref=doc(db,"users",id);
-
-
-
-let snap=await getDoc(ref);
-
-
-let old=snap.data().points || 0;
-
-
-
-await updateDoc(ref,{
-
-points:old+value
-
-});
-
-
-
-alert("تم إضافة النقاط");
-
-
-loadUsers();
-
-
-}
-
-
-
-
-
-
-
-
-
-window.logout=function(){
-
-
-signOut(auth);
-
-
-location="login.html";
-
-
-}
-
-
 
 
 
 </script>
+
 
 
 </body>
