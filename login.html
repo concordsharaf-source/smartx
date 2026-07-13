@@ -42,19 +42,13 @@ background:linear-gradient(135deg,#e94560,#ff6b6b);
 
 <div class="w-full max-w-md">
 
-
 <div class="text-center mb-6">
 
 <h1 class="text-5xl font-black">
 Smart <span class="text-red-400">X</span>
 </h1>
 
-<p class="text-gray-300 mt-3">
-تسجيل الدخول
-</p>
-
 </div>
-
 
 
 <div class="glass rounded-3xl p-7">
@@ -81,29 +75,21 @@ class="w-full py-4 rounded-xl gold font-bold">
 
 
 <p class="text-center mt-5">
-
 <a href="#" onclick="resetPassword()" class="text-green-400">
-
 نسيت كلمة المرور؟
-
 </a>
-
 </p>
 
 
 <p class="text-center mt-4">
-
 ليس لديك حساب؟
-
 <a href="register.html" class="text-red-400">
 إنشاء حساب
 </a>
-
 </p>
 
 
 </div>
-
 
 </div>
 
@@ -119,7 +105,6 @@ import {auth,db} from "./firebase.js";
 import {
 
 signInWithEmailAndPassword,
-
 sendPasswordResetEmail
 
 }
@@ -131,7 +116,6 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
 
 doc,
-
 getDoc
 
 }
@@ -145,22 +129,9 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 window.login = async function(){
 
 
-let email =
-document.getElementById("email").value.trim();
+let email=document.getElementById("email").value.trim();
 
-
-let password =
-document.getElementById("password").value;
-
-
-
-if(!email || !password){
-
-alert("اكتب البريد وكلمة المرور");
-
-return;
-
-}
+let password=document.getElementById("password").value;
 
 
 
@@ -168,56 +139,33 @@ try{
 
 
 let result = await signInWithEmailAndPassword(
-
 auth,
-
 email,
-
 password
-
 );
 
 
 
-let uid = result.user.uid;
+let userDoc = await getDoc(
+doc(db,"users",result.user.uid)
+);
 
 
 
-let userRef = doc(db,"users",uid);
+if(userDoc.exists()){
+
+
+let data=userDoc.data();
 
 
 
-let userSnap = await getDoc(userRef);
+if(data.role === "admin"){
 
-
-
-
-
-if(userSnap.exists()){
-
-
-let data=userSnap.data();
-
-
-
-console.log(data);
-
-
-
-if(data.role && data.role.trim()=="admin"){
-
-
-alert("مرحباً بك يا مدير");
-
-
-window.location.href="admin.html";
-
+window.location.replace("admin.html");
 
 }else{
 
-
-window.location.href="dashboard.html";
-
+window.location.replace("dashboard.html");
 
 }
 
@@ -226,9 +174,7 @@ window.location.href="dashboard.html";
 }else{
 
 
-alert("تم الدخول لكن بيانات المستخدم غير موجودة");
-
-window.location.href="dashboard.html";
+window.location.replace("dashboard.html");
 
 
 }
@@ -238,11 +184,9 @@ window.location.href="dashboard.html";
 
 }
 
-catch(error){
+catch(e){
 
-
-alert("خطأ في الدخول: "+error.message);
-
+alert("بيانات الدخول غير صحيحة");
 
 }
 
@@ -256,51 +200,30 @@ alert("خطأ في الدخول: "+error.message);
 
 
 
-window.resetPassword = async function(){
+window.resetPassword=async function(){
 
 
-let email =
-document.getElementById("email").value.trim();
-
+let email=document.getElementById("email").value.trim();
 
 
 if(!email){
 
 alert("اكتب البريد الإلكتروني أولاً");
-
 return;
 
 }
 
 
-
-try{
-
-
 await sendPasswordResetEmail(auth,email);
 
 
-alert("تم إرسال رابط تغيير كلمة المرور إلى بريدك");
-
-
-}
-
-catch(error){
-
-
-alert(error.message);
-
+alert("تم إرسال رابط استعادة كلمة المرور");
 
 }
-
-
-}
-
 
 
 
 </script>
-
 
 
 </body>
