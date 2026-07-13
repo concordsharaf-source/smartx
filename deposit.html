@@ -6,23 +6,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Smart X - الإيداع</title>
+<title>Smart X - إيداع</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-
-<script>
-tailwind.config={
-theme:{
-extend:{
-colors:{
-gold:'#e94560',
-success:'#00d09c'
-}
-}
-}
-}
-</script>
-
 
 <style>
 
@@ -33,20 +19,20 @@ font-family:'Cairo',sans-serif;
 }
 
 body{
-background:#0b1120;
+background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
 }
 
 .glass{
-background:rgba(255,255,255,.08);
+background:rgba(255,255,255,.1);
 backdrop-filter:blur(15px);
 border:1px solid rgba(255,255,255,.1);
 }
 
-.gold-gradient{
+.gold{
 background:linear-gradient(135deg,#e94560,#ff6b6b);
 }
 
-input,select{
+input,select,textarea{
 outline:none;
 }
 
@@ -55,21 +41,21 @@ outline:none;
 </head>
 
 
+
 <body class="text-white min-h-screen">
 
 
 
 <header class="glass p-5 flex justify-between items-center">
 
+
 <h1 class="text-3xl font-black">
-
-Smart <span class="text-gold">X</span>
-
+Smart <span class="text-red-400">X</span>
 </h1>
 
 
-<a href="wallet.html">
-⬅ العودة
+<a href="dashboard.html" class="text-green-400">
+العودة
 </a>
 
 
@@ -79,55 +65,55 @@ Smart <span class="text-gold">X</span>
 
 
 
-
-
-<main class="max-w-xl mx-auto p-5">
-
+<main class="max-w-md mx-auto p-5">
 
 
 <h2 class="text-3xl font-bold mb-6">
-
-📥 طلب إيداع
-
+💰 طلب إيداع
 </h2>
 
 
 
 
+<div class="glass rounded-3xl p-6">
 
 
 
-<div class="glass rounded-3xl p-7">
+<input
+
+id="amount"
+
+type="number"
+
+placeholder="مبلغ الإيداع"
+
+class="w-full p-4 mb-4 rounded-xl bg-white/10"
+
+>
 
 
 
 
+<select
 
+id="method"
 
-<label class="block mb-2 text-gray-300">
+class="w-full p-4 mb-4 rounded-xl bg-white/10 text-black">
 
-طريقة الدفع
+<option value="">
+اختر طريقة الدفع
+</option>
 
-</label>
-
-
-<select id="method"
-
-class="w-full p-4 mb-5 rounded-xl bg-white/10 text-white">
-
-
-<option value="تحويل بنكي">
+<option>
 تحويل بنكي
 </option>
 
-
-<option value="محفظة إلكترونية">
+<option>
 محفظة إلكترونية
 </option>
 
-
-<option value="عملات رقمية">
-عملات رقمية
+<option>
+أخرى
 </option>
 
 
@@ -137,76 +123,15 @@ class="w-full p-4 mb-5 rounded-xl bg-white/10 text-white">
 
 
 
-
-
-<label class="block mb-2 text-gray-300">
-
-المبلغ
-
-</label>
-
-
-<input
-
-id="amount"
-
-type="number"
-
-placeholder="مثال: 500"
-
-class="w-full p-4 mb-5 rounded-xl bg-white/10"
-
->
-
-
-
-
-
-
-
-
-<label class="block mb-2 text-gray-300">
-
-رقم العملية / ملاحظة
-
-</label>
-
-
-<input
+<textarea
 
 id="note"
 
-type="text"
+placeholder="ملاحظة أو رقم التحويل"
 
-placeholder="رقم التحويل"
+class="w-full p-4 mb-5 rounded-xl bg-white/10">
 
-class="w-full p-4 mb-5 rounded-xl bg-white/10"
-
->
-
-
-
-
-
-
-
-<label class="block mb-2 text-gray-300">
-
-إثبات التحويل
-
-</label>
-
-
-<input
-
-id="image"
-
-type="file"
-
-class="w-full p-4 mb-6 rounded-xl bg-white/10"
-
->
-
+</textarea>
 
 
 
@@ -217,7 +142,7 @@ class="w-full p-4 mb-6 rounded-xl bg-white/10"
 
 onclick="sendDeposit()"
 
-class="w-full py-4 rounded-xl gold-gradient font-bold text-lg">
+class="w-full py-4 rounded-xl gold font-bold">
 
 إرسال طلب الإيداع
 
@@ -225,38 +150,7 @@ class="w-full py-4 rounded-xl gold-gradient font-bold text-lg">
 
 
 
-
-
 </div>
-
-
-
-
-
-
-<div class="glass rounded-3xl p-6 mt-6">
-
-
-<h3 class="text-xl font-bold mb-3">
-
-ملاحظات
-
-</h3>
-
-
-<ul class="text-gray-300 space-y-2">
-
-<li>✓ سيتم مراجعة الطلب من الإدارة</li>
-
-<li>✓ يظهر الرصيد بعد الموافقة</li>
-
-<li>✓ احتفظ بإثبات التحويل</li>
-
-</ul>
-
-
-</div>
-
 
 
 
@@ -267,31 +161,120 @@ class="w-full py-4 rounded-xl gold-gradient font-bold text-lg">
 
 
 
-
-<script>
-
-
-function sendDeposit(){
+<script type="module">
 
 
-
-let amount =
-document.getElementById("amount").value;
+import {auth,db} from "./firebase.js";
 
 
-let method =
+import {
+
+onAuthStateChanged
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+
+import {
+
+doc,
+
+getDoc,
+
+collection,
+
+addDoc,
+
+serverTimestamp
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+
+
+let currentUser=null;
+
+let userData=null;
+
+
+
+
+
+onAuthStateChanged(auth,async(user)=>{
+
+
+if(!user){
+
+location="login.html";
+
+return;
+
+}
+
+
+currentUser=user;
+
+
+
+let snap=await getDoc(
+
+doc(db,"users",user.uid)
+
+);
+
+
+
+if(snap.exists()){
+
+
+userData=snap.data();
+
+
+}
+
+
+
+});
+
+
+
+
+
+
+
+window.sendDeposit=async function(){
+
+
+
+let amount=
+
+Number(document.getElementById("amount").value);
+
+
+
+let method=
+
 document.getElementById("method").value;
 
 
-let note =
+
+let note=
+
 document.getElementById("note").value;
 
 
 
 
-if(!amount){
 
-alert("أدخل مبلغ الإيداع");
+if(amount<=0 || !method){
+
+
+alert("أدخل البيانات المطلوبة");
 
 return;
 
@@ -300,49 +283,32 @@ return;
 
 
 
+await addDoc(
+
+collection(db,"deposits"),
+
+{
 
 
-let deposits =
+userId:currentUser.uid,
 
-JSON.parse(localStorage.getItem("deposits")) || [];
+name:userData.name,
 
+email:userData.email,
 
-
-
-
-
-let request={
-
-
-id:Date.now(),
-
-amount:Number(amount),
+amount:amount,
 
 method:method,
 
 note:note,
 
-status:"قيد المراجعة",
+status:"pending",
 
-date:new Date().toLocaleDateString("ar")
-
-};
+date:serverTimestamp()
 
 
+}
 
-
-
-deposits.push(request);
-
-
-
-
-
-localStorage.setItem(
-
-"deposits",
-
-JSON.stringify(deposits)
 
 );
 
@@ -353,14 +319,18 @@ JSON.stringify(deposits)
 alert("تم إرسال طلب الإيداع بنجاح");
 
 
-window.location="wallet.html";
+location="dashboard.html";
+
 
 
 }
 
 
 
+
+
 </script>
+
 
 
 
