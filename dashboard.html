@@ -42,7 +42,6 @@ background:linear-gradient(135deg,#e94560,#ff6b6b);
 
 <header class="glass p-5 flex justify-between items-center">
 
-
 <h1 class="text-3xl font-black">
 Smart <span class="text-red-400">X</span>
 </h1>
@@ -70,6 +69,7 @@ Smart <span class="text-red-400">X</span>
 <span id="username"></span>
 
 </h2>
+
 
 
 
@@ -119,13 +119,14 @@ $<span id="balance">0</span>
 </p>
 
 <h2 id="code" class="text-xl text-red-400 font-bold">
+
 -
+
 </h2>
 
 </div>
 
 
-
 </div>
 
 
@@ -133,9 +134,22 @@ $<span id="balance">0</span>
 
 
 
-<!-- أزرار الخدمات -->
 
-<div class="grid md:grid-cols-2 gap-4 mt-6">
+<!-- الخدمات -->
+
+<div class="grid md:grid-cols-3 gap-4 mt-6">
+
+
+
+<a href="profile.html"
+
+class="glass text-center p-5 rounded-3xl font-bold">
+
+👤 الملف الشخصي
+
+</a>
+
+
 
 
 <a href="deposit.html"
@@ -148,6 +162,7 @@ class="gold text-center p-5 rounded-3xl font-bold">
 
 
 
+
 <button
 
 class="glass p-5 rounded-3xl font-bold">
@@ -157,7 +172,10 @@ class="glass p-5 rounded-3xl font-bold">
 </button>
 
 
+
 </div>
+
+
 
 
 
@@ -168,7 +186,9 @@ class="glass p-5 rounded-3xl font-bold">
 
 
 <h2 class="text-2xl font-bold mb-4">
+
 بيانات الحساب
+
 </h2>
 
 
@@ -186,8 +206,16 @@ class="glass p-5 rounded-3xl font-bold">
 </p>
 
 
+<p class="mt-3">
+👤 اسم المستخدم:
+<span id="userName"></span>
+</p>
+
+
 
 </div>
+
+
 
 
 
@@ -245,6 +273,7 @@ return;
 
 
 
+
 let snap=await getDoc(
 
 doc(db,"users",user.uid)
@@ -262,6 +291,8 @@ let data=snap.data();
 
 document.getElementById("username").innerHTML=data.name || "";
 
+document.getElementById("userName").innerHTML=data.username || data.name || "";
+
 document.getElementById("balance").innerHTML=data.balance || 0;
 
 document.getElementById("points").innerHTML=data.points || 0;
@@ -271,6 +302,7 @@ document.getElementById("code").innerHTML=data.inviteCode || "-";
 document.getElementById("email").innerHTML=data.email || "";
 
 document.getElementById("phone").innerHTML=data.phone || "";
+
 
 
 }
