@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smart X - الإحالات</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+
+<script>
+
+tailwind.config={
+theme:{
+extend:{
+colors:{
+gold:'#e94560',
+success:'#00d09c'
+}
+}
+}
+}
+
+</script>
+
+
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+
+*{
+font-family:'Cairo',sans-serif;
+}
+
+
+body{
+background:#0b1120;
+}
+
+
+.glass{
+
+background:rgba(255,255,255,.08);
+
+backdrop-filter:blur(15px);
+
+border:1px solid rgba(255,255,255,.1);
+
+}
+
+
+.gold-gradient{
+
+background:linear-gradient(135deg,#e94560,#ff6b6b);
+
+}
+
+
+</style>
+
+
+</head>
+
+
+
+
+
+<body class="text-white min-h-screen">
+
+
+
+
+
+
+<header class="glass p-5 flex justify-between items-center">
+
+
+<h1 class="text-3xl font-black">
+
+Smart
+
+<span class="text-gold">
+
+X
+
+</span>
+
+</h1>
+
+
+
+<a href="dashboard.html">
+
+⬅ العودة
+
+</a>
+
+
+</header>
+
+
+
+
+
+
+
+<main class="max-w-5xl mx-auto p-5">
+
+
+
+
+
+<h2 class="text-3xl font-bold mb-6">
+
+🎁 نظام الإحالة
+
+</h2>
+
+
+
+
+
+
+
+<div class="grid md:grid-cols-3 gap-5">
+
+
+
+
+
+
+<div class="glass rounded-3xl p-6">
+
+
+<p class="text-gray-400">
+
+كود الدعوة
+
+</p>
+
+
+<h2 id="code"
+
+class="text-3xl font-bold text-gold mt-3">
+
+SMART-0000
+
+</h2>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="glass rounded-3xl p-6">
+
+
+<p class="text-gray-400">
+
+عدد المدعوين
+
+</p>
+
+
+<h2 class="text-3xl font-bold">
+
+<span id="count">
+
+0
+
+</span>
+
+</h2>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="glass rounded-3xl p-6">
+
+
+<p class="text-gray-400">
+
+نقاط الإحالة
+
+</p>
+
+
+<h2 class="text-3xl font-bold text-success">
+
+<span id="points">
+
+0
+
+</span>
+
+</h2>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="glass rounded-3xl p-7 mt-6">
+
+
+<h2 class="text-xl font-bold mb-4">
+
+رابط الدعوة الخاص بك
+
+</h2>
+
+
+
+
+
+
+<div class="flex gap-3">
+
+
+<input
+
+id="link"
+
+readonly
+
+class="flex-1 p-4 rounded-xl bg-white/10"
+
+>
+
+
+<button
+
+onclick="copyLink()"
+
+class="px-6 rounded-xl gold-gradient font-bold">
+
+نسخ
+
+</button>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="glass rounded-3xl p-7 mt-6">
+
+
+<h2 class="text-xl font-bold mb-5">
+
+كيف يعمل النظام؟
+
+</h2>
+
+
+
+<div class="space-y-4 text-gray-300">
+
+
+<p>
+1️⃣ شارك رابط الدعوة مع أصدقائك.
+</p>
+
+
+<p>
+2️⃣ عندما يسجل شخص جديد باستخدام الكود الخاص بك تحصل على نقاط.
+</p>
+
+
+<p>
+3️⃣ يمكن استخدام النقاط في المكافآت حسب نظام المنصة.
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+</main>
+
+
+
+
+
+
+
+
+
+<script>
+
+
+let user =
+
+JSON.parse(localStorage.getItem("smartUser"));
+
+
+
+
+
+
+let code="SMART-0000";
+
+
+
+
+if(user){
+
+
+code=user.inviteCode || code;
+
+
+document.getElementById("points").innerHTML=user.points;
+
+
+}
+
+
+
+
+
+
+document.getElementById("code").innerHTML=code;
+
+
+
+
+
+let url=
+
+window.location.origin+
+
+"/register.html?ref="+code;
+
+
+
+
+
+document.getElementById("link").value=url;
+
+
+
+
+
+
+
+function copyLink(){
+
+
+let text=
+
+document.getElementById("link");
+
+
+text.select();
+
+
+navigator.clipboard.writeText(text.value);
+
+
+alert("تم نسخ رابط الدعوة");
+
+
+}
+
+
+
+</script>
+
+
+
+</body>
+
+</html>

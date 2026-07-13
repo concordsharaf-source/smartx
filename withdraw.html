@@ -6,11 +6,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Smart X - الإيداع</title>
+<title>Smart X - السحب</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
+
 <script>
+
 tailwind.config={
 theme:{
 extend:{
@@ -21,6 +23,7 @@ success:'#00d09c'
 }
 }
 }
+
 </script>
 
 
@@ -28,48 +31,78 @@ success:'#00d09c'
 
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
 
+
 *{
 font-family:'Cairo',sans-serif;
 }
+
 
 body{
 background:#0b1120;
 }
 
+
 .glass{
+
 background:rgba(255,255,255,.08);
+
 backdrop-filter:blur(15px);
+
 border:1px solid rgba(255,255,255,.1);
+
 }
+
 
 .gold-gradient{
+
 background:linear-gradient(135deg,#e94560,#ff6b6b);
+
 }
 
+
 input,select{
+
 outline:none;
+
 }
+
 
 </style>
 
+
 </head>
+
+
 
 
 <body class="text-white min-h-screen">
 
 
 
+
+
+
 <header class="glass p-5 flex justify-between items-center">
+
 
 <h1 class="text-3xl font-black">
 
-Smart <span class="text-gold">X</span>
+Smart
+
+<span class="text-gold">
+
+X
+
+</span>
 
 </h1>
 
 
+
 <a href="wallet.html">
+
 ⬅ العودة
+
 </a>
 
 
@@ -85,9 +118,11 @@ Smart <span class="text-gold">X</span>
 
 
 
+
+
 <h2 class="text-3xl font-bold mb-6">
 
-📥 طلب إيداع
+📤 طلب سحب
 
 </h2>
 
@@ -104,30 +139,70 @@ Smart <span class="text-gold">X</span>
 
 
 
-<label class="block mb-2 text-gray-300">
 
-طريقة الدفع
+<div class="mb-6 p-4 rounded-xl bg-white/10">
+
+
+<p class="text-gray-400">
+
+الرصيد الحالي
+
+</p>
+
+
+<h2 class="text-3xl font-bold text-success">
+
+$<span id="balance">
+
+0
+
+</span>
+
+</h2>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<label class="block mb-2">
+
+طريقة السحب
 
 </label>
 
 
-<select id="method"
+<select
+
+id="method"
 
 class="w-full p-4 mb-5 rounded-xl bg-white/10 text-white">
 
 
-<option value="تحويل بنكي">
+<option>
+
 تحويل بنكي
+
 </option>
 
 
-<option value="محفظة إلكترونية">
+<option>
+
 محفظة إلكترونية
+
 </option>
 
 
-<option value="عملات رقمية">
+<option>
+
 عملات رقمية
+
 </option>
 
 
@@ -139,9 +214,11 @@ class="w-full p-4 mb-5 rounded-xl bg-white/10 text-white">
 
 
 
-<label class="block mb-2 text-gray-300">
 
-المبلغ
+
+<label class="block mb-2">
+
+المبلغ المطلوب
 
 </label>
 
@@ -152,7 +229,7 @@ id="amount"
 
 type="number"
 
-placeholder="مثال: 500"
+placeholder="مثال: 200"
 
 class="w-full p-4 mb-5 rounded-xl bg-white/10"
 
@@ -165,47 +242,26 @@ class="w-full p-4 mb-5 rounded-xl bg-white/10"
 
 
 
-<label class="block mb-2 text-gray-300">
 
-رقم العملية / ملاحظة
+<label class="block mb-2">
+
+بيانات الاستلام
 
 </label>
 
 
 <input
 
-id="note"
+id="account"
 
 type="text"
 
-placeholder="رقم التحويل"
+placeholder="رقم الحساب أو المحفظة"
 
 class="w-full p-4 mb-5 rounded-xl bg-white/10"
 
 >
 
-
-
-
-
-
-
-<label class="block mb-2 text-gray-300">
-
-إثبات التحويل
-
-</label>
-
-
-<input
-
-id="image"
-
-type="file"
-
-class="w-full p-4 mb-6 rounded-xl bg-white/10"
-
->
 
 
 
@@ -215,11 +271,11 @@ class="w-full p-4 mb-6 rounded-xl bg-white/10"
 
 <button
 
-onclick="sendDeposit()"
+onclick="sendWithdraw()"
 
 class="w-full py-4 rounded-xl gold-gradient font-bold text-lg">
 
-إرسال طلب الإيداع
+إرسال طلب السحب
 
 </button>
 
@@ -234,28 +290,41 @@ class="w-full py-4 rounded-xl gold-gradient font-bold text-lg">
 
 
 
+
+
 <div class="glass rounded-3xl p-6 mt-6">
 
 
-<h3 class="text-xl font-bold mb-3">
+<h3 class="text-xl font-bold mb-4">
 
-ملاحظات
+شروط السحب
 
 </h3>
 
 
 <ul class="text-gray-300 space-y-2">
 
-<li>✓ سيتم مراجعة الطلب من الإدارة</li>
 
-<li>✓ يظهر الرصيد بعد الموافقة</li>
+<li>
+✓ تتم مراجعة الطلب من الإدارة
+</li>
 
-<li>✓ احتفظ بإثبات التحويل</li>
+
+<li>
+✓ قد يستغرق التنفيذ وقتًا حسب الطريقة
+</li>
+
+
+<li>
+✓ يجب أن تكون بيانات الاستلام صحيحة
+</li>
+
 
 </ul>
 
 
 </div>
+
 
 
 
@@ -268,32 +337,19 @@ class="w-full py-4 rounded-xl gold-gradient font-bold text-lg">
 
 
 
+
 <script>
 
 
-function sendDeposit(){
+let user =
+
+JSON.parse(localStorage.getItem("smartUser"));
 
 
 
-let amount =
-document.getElementById("amount").value;
+if(user){
 
-
-let method =
-document.getElementById("method").value;
-
-
-let note =
-document.getElementById("note").value;
-
-
-
-
-if(!amount){
-
-alert("أدخل مبلغ الإيداع");
-
-return;
+document.getElementById("balance").innerHTML=user.balance;
 
 }
 
@@ -302,9 +358,71 @@ return;
 
 
 
-let deposits =
 
-JSON.parse(localStorage.getItem("deposits")) || [];
+
+function sendWithdraw(){
+
+
+
+let amount =
+
+Number(document.getElementById("amount").value);
+
+
+
+let method =
+
+document.getElementById("method").value;
+
+
+
+let account =
+
+document.getElementById("account").value;
+
+
+
+
+
+
+
+if(!amount || !account){
+
+
+alert("أكمل البيانات");
+
+return;
+
+
+}
+
+
+
+
+
+
+
+if(user && amount > user.balance){
+
+
+alert("الرصيد غير كافٍ");
+
+
+return;
+
+
+}
+
+
+
+
+
+
+
+let withdrawals =
+
+JSON.parse(localStorage.getItem("withdrawals")) || [];
+
 
 
 
@@ -316,15 +434,18 @@ let request={
 
 id:Date.now(),
 
-amount:Number(amount),
+user:user ? user.username : "",
+
+amount:amount,
 
 method:method,
 
-note:note,
+account:account,
 
 status:"قيد المراجعة",
 
 date:new Date().toLocaleDateString("ar")
+
 
 };
 
@@ -332,7 +453,11 @@ date:new Date().toLocaleDateString("ar")
 
 
 
-deposits.push(request);
+
+
+withdrawals.push(request);
+
+
 
 
 
@@ -340,9 +465,9 @@ deposits.push(request);
 
 localStorage.setItem(
 
-"deposits",
+"withdrawals",
 
-JSON.stringify(deposits)
+JSON.stringify(withdrawals)
 
 );
 
@@ -350,10 +475,13 @@ JSON.stringify(deposits)
 
 
 
-alert("تم إرسال طلب الإيداع بنجاح");
+
+
+alert("تم إرسال طلب السحب بنجاح");
 
 
 window.location="wallet.html";
+
 
 
 }
