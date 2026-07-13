@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Smart X - لوحة التحكم</title>
+<title>Smart X - لوحة العضو</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -40,8 +40,8 @@ background:linear-gradient(135deg,#e94560,#ff6b6b);
 <body class="text-white min-h-screen">
 
 
-
 <header class="glass p-5 flex justify-between items-center">
+
 
 <h1 class="text-3xl font-black">
 Smart <span class="text-red-400">X</span>
@@ -58,7 +58,9 @@ Smart <span class="text-red-400">X</span>
 
 
 
+
 <main class="max-w-5xl mx-auto p-5">
+
 
 
 <h2 class="text-3xl font-bold mb-6">
@@ -78,7 +80,7 @@ Smart <span class="text-red-400">X</span>
 
 <div class="glass rounded-3xl p-6">
 
-<p class="text-gray-300">
+<p>
 الرصيد
 </p>
 
@@ -95,7 +97,7 @@ $<span id="balance">0</span>
 
 <div class="glass rounded-3xl p-6">
 
-<p class="text-gray-300">
+<p>
 النقاط
 </p>
 
@@ -112,14 +114,12 @@ $<span id="balance">0</span>
 
 <div class="glass rounded-3xl p-6">
 
-<p class="text-gray-300">
+<p>
 كود الإحالة
 </p>
 
-<h2 id="code" class="text-xl font-bold text-red-400">
-
----
-
+<h2 id="code" class="text-xl text-red-400 font-bold">
+-
 </h2>
 
 </div>
@@ -128,6 +128,36 @@ $<span id="balance">0</span>
 
 </div>
 
+
+
+
+
+
+<!-- أزرار الخدمات -->
+
+<div class="grid md:grid-cols-2 gap-4 mt-6">
+
+
+<a href="deposit.html"
+
+class="gold text-center p-5 rounded-3xl font-bold">
+
+💰 طلب إيداع
+
+</a>
+
+
+
+<button
+
+class="glass p-5 rounded-3xl font-bold">
+
+💸 طلب سحب
+
+</button>
+
+
+</div>
 
 
 
@@ -149,22 +179,15 @@ $<span id="balance">0</span>
 </p>
 
 
+
 <p class="mt-3">
 📱 الهاتف:
 <span id="phone"></span>
 </p>
 
 
-<p class="mt-3">
-👥 عدد الإحالات:
-<span id="referrals">0</span>
-</p>
-
-
 
 </div>
-
-
 
 
 
@@ -175,16 +198,17 @@ $<span id="balance">0</span>
 
 
 
+
+
 <script type="module">
 
 
-import { auth, db } from "./firebase.js";
+import {auth,db} from "./firebase.js";
 
 
 import {
 
 onAuthStateChanged,
-
 signOut
 
 }
@@ -192,19 +216,11 @@ signOut
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
+
 import {
 
 doc,
-
-getDoc,
-
-collection,
-
-query,
-
-where,
-
-getDocs
+getDoc
 
 }
 
@@ -216,13 +232,12 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
-onAuthStateChanged(auth, async(user)=>{
-
+onAuthStateChanged(auth,async(user)=>{
 
 
 if(!user){
 
-window.location="login.html";
+location="login.html";
 
 return;
 
@@ -230,10 +245,11 @@ return;
 
 
 
-let userRef = doc(db,"users",user.uid);
+let snap=await getDoc(
 
+doc(db,"users",user.uid)
 
-let snap = await getDoc(userRef);
+);
 
 
 
@@ -244,42 +260,17 @@ let data=snap.data();
 
 
 
-document.getElementById("username").innerHTML=data.name;
-
+document.getElementById("username").innerHTML=data.name || "";
 
 document.getElementById("balance").innerHTML=data.balance || 0;
 
-
 document.getElementById("points").innerHTML=data.points || 0;
-
 
 document.getElementById("code").innerHTML=data.inviteCode || "-";
 
-
 document.getElementById("email").innerHTML=data.email || "";
 
-
 document.getElementById("phone").innerHTML=data.phone || "";
-
-
-
-
-// حساب الإحالات
-
-let q=query(
-
-collection(db,"users"),
-
-where("invitedBy","==",data.inviteCode)
-
-);
-
-
-let result=await getDocs(q);
-
-
-document.getElementById("referrals").innerHTML=result.size;
-
 
 
 }
@@ -294,22 +285,21 @@ document.getElementById("referrals").innerHTML=result.size;
 
 
 
-
 window.logout=function(){
 
 
 signOut(auth);
 
 
-window.location="login.html";
+location="login.html";
 
 
 }
 
 
 
-
 </script>
+
 
 
 </body>
