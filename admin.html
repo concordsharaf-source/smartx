@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smart X - لوحة المدير</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+tailwind.config = {
+theme:{
+extend:{
+colors:{
+gold:'#e94560',
+success:'#00d09c'
+}
+}
+}
+}
+</script>
+
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+*{
+font-family:'Cairo',sans-serif;
+}
+
+
+body{
+
+background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
+
+}
+
+
+.glass{
+
+background:rgba(255,255,255,.1);
+
+backdrop-filter:blur(15px);
+
+border:1px solid rgba(255,255,255,.1);
+
+}
+
+
+.gold-gradient{
+
+background:linear-gradient(135deg,#e94560,#ff6b6b);
+
+}
+
+
+input{
+
+outline:none;
+
+}
+
+</style>
+
+</head>
+
+
+
+<body class="text-white min-h-screen">
+
+
+
+
+
+<header class="glass p-5 flex justify-between items-center">
+
+
+<h1 class="text-3xl font-black">
+
+Smart <span class="text-gold">X</span>
+
+</h1>
+
+
+<button onclick="logout()">
+
+خروج
+
+</button>
+
+
+</header>
+
+
+
+
+
+
+
+<main class="max-w-6xl mx-auto p-5">
+
+
+
+<h2 class="text-3xl font-bold mb-6">
+
+لوحة تحكم المدير 👑
+
+</h2>
+
+
+
+
+
+
+
+<!-- الإحصائيات -->
+
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+
+
+
+<div class="glass rounded-2xl p-5">
+
+<p class="text-gray-400">
+
+الأعضاء
+
+</p>
+
+<h2 class="text-3xl font-bold">
+
+1
+
+</h2>
+
+</div>
+
+
+
+
+<div class="glass rounded-2xl p-5">
+
+<p class="text-gray-400">
+
+الأرصدة
+
+</p>
+
+<h2 class="text-3xl font-bold text-success">
+
+$0
+
+</h2>
+
+</div>
+
+
+
+
+<div class="glass rounded-2xl p-5">
+
+<p class="text-gray-400">
+
+النقاط
+
+</p>
+
+<h2 class="text-3xl font-bold text-gold">
+
+0
+
+</h2>
+
+</div>
+
+
+
+
+<div class="glass rounded-2xl p-5">
+
+<p class="text-gray-400">
+
+الحالة
+
+</p>
+
+<h2 class="text-3xl">
+
+نشط
+
+</h2>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<!-- التحكم بالعضو -->
+
+
+<div class="grid md:grid-cols-2 gap-6">
+
+
+
+
+
+<div class="glass rounded-3xl p-6">
+
+
+<h2 class="text-xl font-bold mb-5">
+
+إضافة رصيد 💰
+
+</h2>
+
+
+
+<input
+
+id="amount"
+
+type="number"
+
+placeholder="المبلغ"
+
+class="w-full p-4 mb-4 rounded-xl bg-white/10"
+
+
+
+>
+
+
+
+<button onclick="addBalance()"
+
+class="w-full py-4 rounded-xl gold-gradient font-bold">
+
+إضافة الرصيد
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="glass rounded-3xl p-6">
+
+
+<h2 class="text-xl font-bold mb-5">
+
+إضافة نقاط ⭐
+
+</h2>
+
+
+
+<input
+
+id="points"
+
+type="number"
+
+placeholder="عدد النقاط"
+
+class="w-full p-4 mb-4 rounded-xl bg-white/10"
+
+
+
+>
+
+
+
+<button onclick="addPoints()"
+
+class="w-full py-4 rounded-xl gold-gradient font-bold">
+
+إضافة النقاط
+
+</button>
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<!-- بيانات العضو -->
+
+
+<div class="glass rounded-3xl p-6 mt-6">
+
+
+<h2 class="text-xl font-bold mb-5">
+
+بيانات المستخدم الحالي
+
+</h2>
+
+
+<div class="space-y-3">
+
+
+<p>
+
+الاسم:
+<span id="username">
+
+-
+
+</span>
+
+</p>
+
+
+<p>
+
+الرصيد:
+<span id="userBalance" class="text-success">
+
+0
+
+</span>
+
+$
+
+</p>
+
+
+<p>
+
+النقاط:
+<span id="userPoints" class="text-gold">
+
+0
+
+</span>
+
+</p>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+</main>
+
+
+
+
+
+
+<script>
+
+
+let user =
+JSON.parse(localStorage.getItem("smartUser"));
+
+
+
+if(!user){
+
+alert("لا يوجد مستخدم");
+
+window.location="login.html";
+
+}
+
+
+
+
+
+function showData(){
+
+
+document.getElementById("username").innerHTML=user.name;
+
+
+document.getElementById("userBalance").innerHTML=user.balance;
+
+
+document.getElementById("userPoints").innerHTML=user.points;
+
+
+}
+
+
+showData();
+
+
+
+
+
+
+function addBalance(){
+
+
+let amount =
+Number(document.getElementById("amount").value);
+
+
+
+if(amount>0){
+
+
+user.balance += amount;
+
+
+save();
+
+
+alert("تم إضافة الرصيد");
+
+
+}
+
+
+
+}
+
+
+
+
+
+function addPoints(){
+
+
+let points =
+Number(document.getElementById("points").value);
+
+
+
+if(points>0){
+
+
+user.points += points;
+
+
+save();
+
+
+alert("تم إضافة النقاط");
+
+
+}
+
+
+
+}
+
+
+
+
+
+function save(){
+
+
+localStorage.setItem(
+
+"smartUser",
+
+JSON.stringify(user)
+
+);
+
+
+showData();
+
+
+}
+
+
+
+
+
+
+
+function logout(){
+
+
+localStorage.clear();
+
+window.location="index.html";
+
+
+}
+
+
+
+</script>
+
+
+
+
+
+</body>
+
+</html>
