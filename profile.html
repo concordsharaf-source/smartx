@@ -32,18 +32,12 @@ border:1px solid rgba(255,255,255,.1);
 background:linear-gradient(135deg,#e94560,#ff6b6b);
 }
 
-input,textarea{
-outline:none;
-}
-
 </style>
 
 </head>
 
 
-
 <body class="text-white min-h-screen">
-
 
 
 <header class="glass p-5 flex justify-between items-center">
@@ -77,32 +71,33 @@ Smart <span class="text-red-400">X</span>
 
 
 
-<img id="photo"
+<img id="avatar"
 
-src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-
-class="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-white/20">
-
-
-
-<input
-
-id="photoInput"
-
-type="file"
-
-accept="image/*"
-
-class="w-full mb-5">
+class="w-32 h-32 rounded-full mx-auto mb-5 bg-white">
 
 
 
 
 
+<h3 class="text-xl font-bold mb-3">
+اختر الصورة الرمزية
+</h3>
 
-<input
 
-id="name"
+
+<div id="avatars"
+
+class="grid grid-cols-4 gap-3 mb-6">
+
+</div>
+
+
+
+
+
+
+
+<input id="name"
 
 placeholder="الاسم الكامل"
 
@@ -112,9 +107,7 @@ class="w-full p-4 mb-3 rounded-xl bg-white/10">
 
 
 
-<input
-
-id="username"
+<input id="username"
 
 placeholder="اسم المستخدم"
 
@@ -124,9 +117,7 @@ class="w-full p-4 mb-3 rounded-xl bg-white/10">
 
 
 
-<input
-
-id="phone"
+<input id="phone"
 
 placeholder="رقم الهاتف"
 
@@ -136,9 +127,7 @@ class="w-full p-4 mb-3 rounded-xl bg-white/10">
 
 
 
-<input
-
-id="country"
+<input id="country"
 
 placeholder="الدولة"
 
@@ -148,11 +137,9 @@ class="w-full p-4 mb-3 rounded-xl bg-white/10">
 
 
 
-<textarea
+<textarea id="bio"
 
-id="bio"
-
-placeholder="نبذة عنك"
+placeholder="نبذة قصيرة"
 
 class="w-full p-4 mb-5 rounded-xl bg-white/10">
 
@@ -163,9 +150,7 @@ class="w-full p-4 mb-5 rounded-xl bg-white/10">
 
 
 
-<button
-
-onclick="saveProfile()"
+<button onclick="saveProfile()"
 
 class="w-full py-4 rounded-xl gold font-bold">
 
@@ -218,8 +203,77 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
-
 let uid="";
+
+let avatarURL="";
+
+
+
+
+
+
+let avatarList=[];
+
+
+
+for(let i=1;i<=12;i++){
+
+
+avatarList.push(
+
+"https://api.dicebear.com/9.x/adventurer/svg?seed=SmartX"+i
+
+);
+
+
+}
+
+
+
+
+
+
+
+let avatarBox=document.getElementById("avatars");
+
+
+
+avatarList.forEach((url)=>{
+
+
+avatarBox.innerHTML+=`
+
+<img
+
+src="${url}"
+
+onclick="selectAvatar('${url}')"
+
+class="w-16 h-16 rounded-full cursor-pointer bg-white p-1">
+
+
+`;
+
+
+});
+
+
+
+
+
+
+window.selectAvatar=function(url){
+
+
+avatarURL=url;
+
+
+document.getElementById("avatar").src=url;
+
+
+}
+
+
 
 
 
@@ -235,7 +289,6 @@ location="login.html";
 return;
 
 }
-
 
 
 uid=user.uid;
@@ -256,7 +309,6 @@ if(snap.exists()){
 let data=snap.data();
 
 
-
 name.value=data.name || "";
 
 username.value=data.username || "";
@@ -271,7 +323,16 @@ bio.value=data.bio || "";
 
 if(data.photoURL){
 
-photo.src=data.photoURL;
+avatarURL=data.photoURL;
+
+avatar.src=data.photoURL;
+
+
+}else{
+
+
+avatar.src=avatarList[0];
+
 
 }
 
@@ -282,6 +343,7 @@ photo.src=data.photoURL;
 
 
 });
+
 
 
 
@@ -308,7 +370,9 @@ phone:phone.value,
 
 country:country.value,
 
-bio:bio.value
+bio:bio.value,
+
+photoURL:avatarURL
 
 
 }
@@ -317,17 +381,14 @@ bio:bio.value
 
 
 
-alert("تم حفظ البيانات");
+alert("تم حفظ الملف الشخصي");
 
 
 }
 
 
 
-
-
 </script>
-
 
 
 </body>
