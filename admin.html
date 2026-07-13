@@ -28,8 +28,10 @@ backdrop-filter:blur(15px);
 border:1px solid rgba(255,255,255,.1);
 }
 
-.gold{
-background:linear-gradient(135deg,#e94560,#ff6b6b);
+.btn{
+padding:12px;
+border-radius:15px;
+font-weight:bold;
 }
 
 </style>
@@ -46,12 +48,13 @@ background:linear-gradient(135deg,#e94560,#ff6b6b);
 Smart <span class="text-red-400">X</span>
 </h1>
 
+
 <button onclick="logout()" class="text-red-300">
 خروج
 </button>
 
-</header>
 
+</header>
 
 
 
@@ -70,10 +73,7 @@ Smart <span class="text-red-400">X</span>
 </h2>
 
 
-<div id="deposits" class="space-y-4 mb-10">
-
-</div>
-
+<div id="deposits" class="space-y-4 mb-10"></div>
 
 
 
@@ -83,9 +83,7 @@ Smart <span class="text-red-400">X</span>
 </h2>
 
 
-<div id="users" class="space-y-5">
-
-</div>
+<div id="users" class="space-y-5"></div>
 
 
 
@@ -103,7 +101,6 @@ Smart <span class="text-red-400">X</span>
 import {auth,db} from "./firebase.js";
 
 
-
 import {
 
 onAuthStateChanged,
@@ -119,15 +116,13 @@ import {
 
 doc,
 getDoc,
-collection,
 getDocs,
+collection,
 updateDoc
 
 }
 
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
 
 
 
@@ -147,13 +142,7 @@ return;
 }
 
 
-
-let admin=await getDoc(
-
-doc(db,"users",user.uid)
-
-);
-
+let admin=await getDoc(doc(db,"users",user.uid));
 
 
 if(!admin.exists() || admin.data().role!="admin"){
@@ -165,11 +154,9 @@ return;
 }
 
 
-
 loadDeposits();
 
 loadUsers();
-
 
 
 });
@@ -187,16 +174,15 @@ async function loadDeposits(){
 
 let box=document.getElementById("deposits");
 
+box.innerHTML="لا توجد طلبات";
+
+
+
+let snap=await getDocs(collection(db,"deposits"));
+
+
 
 box.innerHTML="";
-
-
-
-let snap=await getDocs(
-
-collection(db,"deposits")
-
-);
 
 
 
@@ -206,47 +192,31 @@ snap.forEach((item)=>{
 let d=item.data();
 
 
+
 if(d.status=="pending"){
 
 
 
-box.innerHTML += `
-
+box.innerHTML+=`
 
 <div class="glass rounded-3xl p-5">
 
 
-<h3 class="text-xl font-bold">
-
-${d.name}
-
-</h3>
+<h3 class="text-xl font-bold">${d.name}</h3>
 
 
-<p>
-💰 المبلغ: ${d.amount}
-</p>
+<p>💰 المبلغ: ${d.amount}</p>
 
+<p>🏦 الطريقة: ${d.method}</p>
 
-<p>
-🏦 الطريقة: ${d.method}
-</p>
-
-
-<p>
-📝 ${d.note || ""}
-</p>
-
+<p>${d.note || ""}</p>
 
 
 <div class="flex gap-3 mt-4">
 
 
-<button
-
-onclick="approveDeposit('${item.id}','${d.userId}',${d.amount})"
-
-class="bg-green-600 p-3 rounded-xl">
+<button onclick="approveDeposit('${item.id}','${d.userId}',${d.amount})"
+class="bg-green-600 btn">
 
 قبول
 
@@ -254,11 +224,8 @@ class="bg-green-600 p-3 rounded-xl">
 
 
 
-<button
-
-onclick="rejectDeposit('${item.id}')"
-
-class="bg-red-600 p-3 rounded-xl">
+<button onclick="rejectDeposit('${item.id}')"
+class="bg-red-600 btn">
 
 رفض
 
@@ -270,14 +237,13 @@ class="bg-red-600 p-3 rounded-xl">
 
 </div>
 
-
 `;
 
 }
 
 
-});
 
+});
 
 
 }
@@ -293,48 +259,32 @@ class="bg-red-600 p-3 rounded-xl">
 window.approveDeposit=async function(id,userId,amount){
 
 
-
-let userRef=doc(db,"users",userId);
-
-
-let userSnap=await getDoc(userRef);
+let ref=doc(db,"users",userId);
 
 
-let old=userSnap.data().balance || 0;
+let snap=await getDoc(ref);
 
 
+await updateDoc(ref,{
 
-await updateDoc(userRef,{
-
-balance:old+amount
+balance:(snap.data().balance || 0)+amount
 
 });
 
 
 
-await updateDoc(
-
-doc(db,"deposits",id),
-
-{
+await updateDoc(doc(db,"deposits",id),{
 
 status:"approved"
 
-}
-
-);
-
-
-
-alert("تم قبول الإيداع");
+});
 
 
 loadDeposits();
+loadUsers();
 
 
 }
-
-
 
 
 
@@ -346,25 +296,14 @@ loadDeposits();
 window.rejectDeposit=async function(id){
 
 
-await updateDoc(
-
-doc(db,"deposits",id),
-
-{
+await updateDoc(doc(db,"deposits",id),{
 
 status:"rejected"
 
-}
-
-);
-
-
-
-alert("تم رفض الطلب");
+});
 
 
 loadDeposits();
-
 
 
 }
@@ -386,11 +325,8 @@ let box=document.getElementById("users");
 box.innerHTML="";
 
 
-let snap=await getDocs(
 
-collection(db,"users")
-
-);
+let snap=await getDocs(collection(db,"users"));
 
 
 
@@ -399,14 +335,16 @@ snap.forEach((item)=>{
 
 let u=item.data();
 
-
-box.innerHTML += `
-
-
-<div class="glass rounded-3xl p-5">
+let id=item.id;
 
 
-<h2 class="text-xl font-bold">
+
+box.innerHTML+=`
+
+<div class="glass rounded-3xl p-6">
+
+
+<h2 class="text-2xl font-bold">
 
 ${u.name || ""}
 
@@ -425,15 +363,81 @@ ${u.name || ""}
 </p>
 
 
-<p class="text-yellow-400">
+<input id="balance${id}"
+
+type="number"
+
+placeholder="المبلغ"
+
+class="w-full p-3 mt-3 rounded-xl bg-white/10">
+
+
+
+<div class="grid grid-cols-2 gap-2 mt-3">
+
+
+<button onclick="addBalance('${id}')"
+class="bg-green-700 btn">
+
++ رصيد
+
+</button>
+
+
+<button onclick="minusBalance('${id}')"
+class="bg-red-700 btn">
+
+- رصيد
+
+</button>
+
+
+</div>
+
+
+
+
+
+<p class="text-yellow-400 mt-5">
 
 ⭐ النقاط: ${u.points || 0}
 
 </p>
 
 
+<input id="points${id}"
+
+type="number"
+
+placeholder="النقاط"
+
+class="w-full p-3 mt-3 rounded-xl bg-white/10">
+
+
+
+<div class="grid grid-cols-2 gap-2 mt-3">
+
+
+<button onclick="addPoints('${id}')"
+class="bg-yellow-600 btn">
+
++ نقاط
+
+</button>
+
+
+<button onclick="minusPoints('${id}')"
+class="bg-orange-700 btn">
+
+- نقاط
+
+</button>
+
+
 </div>
 
+
+</div>
 
 `;
 
@@ -452,14 +456,87 @@ ${u.name || ""}
 
 
 
-window.logout=function(){
+async function changeValue(id,field,value){
 
+
+let ref=doc(db,"users",id);
+
+
+let snap=await getDoc(ref);
+
+
+let old=snap.data()[field] || 0;
+
+
+
+await updateDoc(ref,{
+
+[field]:old+value
+
+});
+
+
+loadUsers();
+
+
+}
+
+
+
+
+
+
+window.addBalance=(id)=>{
+
+let v=Number(document.getElementById("balance"+id).value);
+
+changeValue(id,"balance",v);
+
+}
+
+
+
+window.minusBalance=(id)=>{
+
+let v=Number(document.getElementById("balance"+id).value);
+
+changeValue(id,"balance",-v);
+
+}
+
+
+
+
+window.addPoints=(id)=>{
+
+let v=Number(document.getElementById("points"+id).value);
+
+changeValue(id,"points",v);
+
+}
+
+
+
+
+window.minusPoints=(id)=>{
+
+let v=Number(document.getElementById("points"+id).value);
+
+changeValue(id,"points",-v);
+
+}
+
+
+
+
+
+
+
+window.logout=function(){
 
 signOut(auth);
 
-
 location="login.html";
-
 
 }
 
