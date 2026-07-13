@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smart X</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+
+*{
+font-family:'Cairo',sans-serif;
+box-sizing:border-box;
+}
+
+
+body{
+margin:0;
+background:#050b18;
+color:white;
+overflow-x:hidden;
+}
+
+
+
+/* خلفية متحركة */
+
+.light{
+
+position:fixed;
+width:450px;
+height:450px;
+border-radius:50%;
+filter:blur(120px);
+opacity:.35;
+animation:move 10s infinite alternate;
+
+}
+
+
+.green{
+
+background:#00ff99;
+top:-150px;
+right:-150px;
+
+}
+
+
+.blue{
+
+background:#0066ff;
+bottom:-150px;
+left:-150px;
+
+}
+
+
+@keyframes move{
+
+from{
+transform:translate(0,0);
+}
+
+to{
+transform:translate(100px,80px);
+}
+
+}
+
+
+
+
+.glass{
+
+background:rgba(255,255,255,.08);
+border:1px solid rgba(255,255,255,.15);
+backdrop-filter:blur(15px);
+
+}
+
+
+
+.pulse{
+
+animation:pulse 2s infinite;
+
+}
+
+
+@keyframes pulse{
+
+50%{
+transform:scale(1.05);
+}
+
+}
+
+
+
+
+.number{
+
+font-size:35px;
+font-weight:900;
+
+}
+
+
+
+
+
+/* الشريط المتحرك */
+
+.ticker{
+
+overflow:hidden;
+white-space:nowrap;
+
+}
+
+
+.ticker span{
+
+display:inline-block;
+
+padding-right:100%;
+
+animation:ticker 18s linear infinite;
+
+}
+
+
+@keyframes ticker{
+
+from{
+
+transform:translateX(0);
+
+}
+
+
+to{
+
+transform:translateX(100%);
+
+}
+
+}
+
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+
+<div class="light green"></div>
+
+<div class="light blue"></div>
+
+
+
+
+<header class="relative z-10 p-5 flex justify-between items-center max-w-6xl mx-auto">
+
+
+<div>
+
+<h1 class="text-4xl font-black">
+
+Smart
+
+<span class="text-green-400">
+X
+</span>
+
+</h1>
+
+
+<p class="text-gray-400">
+المستقبل المالي يبدأ هنا
+</p>
+
+
+</div>
+
+
+
+<div class="flex gap-3">
+
+<a href="login.html"
+class="glass px-5 py-3 rounded-xl">
+
+دخول
+
+</a>
+
+
+<a href="register.html"
+class="bg-green-500 text-black px-5 py-3 rounded-xl font-bold">
+
+تسجيل
+
+</a>
+
+
+</div>
+
+
+</header>
+
+
+
+
+
+
+<section class="relative z-10 max-w-6xl mx-auto px-5 pt-16 text-center">
+
+
+<h2 class="text-5xl md:text-7xl font-black">
+
+إدارة أموالك
+
+<br>
+
+<span class="text-green-400">
+
+بذكاء وثقة
+
+</span>
+
+</h2>
+
+
+
+<p class="text-gray-300 text-xl mt-6">
+
+منصة حديثة لإدارة الحسابات والتحليلات بسهولة.
+
+</p>
+
+
+
+
+<div class="mt-8">
+
+<a href="register.html"
+
+class="bg-green-500 text-black px-10 py-4 rounded-2xl text-xl font-bold pulse">
+
+ابدأ الآن 🚀
+
+</a>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+<section class="relative z-10 grid md:grid-cols-3 gap-5 max-w-6xl mx-auto px-5 mt-16">
+
+
+<div class="glass rounded-3xl p-6 text-center">
+
+
+💰
+
+<p>
+إجمالي النشاط
+</p>
+
+
+<div id="money" class="number">
+
+0
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="glass rounded-3xl p-6 text-center">
+
+
+👥
+
+<p>
+المستخدمون
+</p>
+
+
+<div id="users" class="number">
+
+0
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="glass rounded-3xl p-6 text-center">
+
+
+⚡
+
+<p>
+العمليات
+</p>
+
+
+<div id="ops" class="number">
+
+0
+
+</div>
+
+
+</div>
+
+
+</section>
+
+<section class="relative z-10 max-w-6xl mx-auto px-5 mt-16">
+
+
+<div class="glass rounded-3xl p-6">
+
+
+<div class="flex justify-between mb-5">
+
+<h3 class="text-2xl font-bold">
+📈 حركة المنصة
+</h3>
+
+
+<span class="text-green-400">
+● مباشر
+</span>
+
+
+</div>
+
+
+<canvas id="chart"></canvas>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+<!-- الشريط المتحرك -->
+
+<section class="relative z-10 max-w-6xl mx-auto px-5 mt-8">
+
+
+<div class="glass rounded-2xl p-4 ticker">
+
+
+<span class="text-green-300">
+
+🟢 تم تحديث النظام
+&nbsp;&nbsp; • &nbsp;&nbsp;
+🟢 عضو جديد انضم
+&nbsp;&nbsp; • &nbsp;&nbsp;
+🟢 تم تفعيل حساب جديد
+&nbsp;&nbsp; • &nbsp;&nbsp;
+🟢 Smart X يعمل الآن
+&nbsp;&nbsp; • &nbsp;&nbsp;
+🟢 خدمة آمنة وسريعة
+
+
+</span>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+<section class="relative z-10 max-w-6xl mx-auto px-5 mt-16">
+
+
+<h2 class="text-3xl font-bold text-center mb-8">
+
+مميزات Smart X
+
+</h2>
+
+
+
+<div class="grid md:grid-cols-4 gap-5">
+
+
+<div class="glass rounded-3xl p-6 text-center">
+
+🛡️
+
+<h3 class="font-bold mt-3">
+الأمان
+</h3>
+
+<p class="text-gray-400 mt-2">
+حماية الحسابات والبيانات
+</p>
+
+</div>
+
+
+
+
+<div class="glass rounded-3xl p-6 text-center">
+
+📊
+
+<h3 class="font-bold mt-3">
+التحليلات
+</h3>
+
+<p class="text-gray-400 mt-2">
+متابعة الأداء بسهولة
+</p>
+
+</div>
+
+
+
+
+<div class="glass rounded-3xl p-6 text-center">
+
+👥
+
+<h3 class="font-bold mt-3">
+الدعوات
+</h3>
+
+<p class="text-gray-400 mt-2">
+إدارة شبكة الأصدقاء
+</p>
+
+</div>
+
+
+
+
+<div class="glass rounded-3xl p-6 text-center">
+
+⚡
+
+<h3 class="font-bold mt-3">
+السرعة
+</h3>
+
+<p class="text-gray-400 mt-2">
+تجربة سلسة على الهاتف
+</p>
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+<footer class="relative z-10 text-center p-8 mt-16 text-gray-400">
+
+© Smart X
+
+</footer>
+
+
+
+
+
+
+
+
+<script>
+
+
+// عدادات متحركة غير منتظمة
+
+
+function counter(id,start,end){
+
+
+let value=start;
+
+
+let element=document.getElementById(id);
+
+
+
+let timer=setInterval(()=>{
+
+
+value += Math.floor(Math.random()*500)+50;
+
+
+if(value>=end){
+
+value=end;
+
+clearInterval(timer);
+
+}
+
+
+element.innerHTML=value.toLocaleString();
+
+
+
+},150);
+
+
+
+}
+
+
+
+counter("money",10000,2483280);
+
+counter("users",100,4283);
+
+counter("ops",50,17392);
+
+
+
+
+
+
+
+
+// الرسم البياني
+
+
+const ctx=document.getElementById("chart");
+
+
+let values=[30,50,40,70,55,90,65,100];
+
+
+
+let chart=new Chart(ctx,{
+
+type:"line",
+
+data:{
+
+labels:["1","2","3","4","5","6","7","8"],
+
+datasets:[{
+
+data:values,
+
+borderColor:"#00ff99",
+
+backgroundColor:"rgba(0,255,150,.15)",
+
+fill:true,
+
+tension:.4
+
+}]
+
+},
+
+
+options:{
+
+responsive:true,
+
+
+plugins:{
+
+legend:{
+display:false
+}
+
+},
+
+
+scales:{
+
+x:{
+display:false
+},
+
+y:{
+display:false
+}
+
+
+}
+
+
+}
+
+
+});
+
+
+
+
+
+setInterval(()=>{
+
+
+values.shift();
+
+
+values.push(
+
+Math.floor(Math.random()*80)+20
+
+);
+
+
+
+chart.data.datasets[0].data=values;
+
+
+chart.update();
+
+
+},2000);
+
+
+
+</script>
+
+
+</body>
+
+</html>
