@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smart X Dashboard</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+
+*{
+font-family:'Cairo',sans-serif;
+box-sizing:border-box;
+}
+
+
+body{
+
+margin:0;
+background:#050b18;
+color:white;
+padding-bottom:90px;
+
+}
+
+
+
+
+.light{
+
+position:fixed;
+width:450px;
+height:450px;
+border-radius:50%;
+filter:blur(120px);
+opacity:.35;
+z-index:-1;
+
+}
+
+
+
+.green{
+
+background:#00ff99;
+top:-150px;
+right:-150px;
+
+}
+
+
+
+.blue{
+
+background:#0066ff;
+bottom:-150px;
+left:-150px;
+
+}
+
+
+
+
+.glass{
+
+background:rgba(255,255,255,.08);
+border:1px solid rgba(255,255,255,.15);
+backdrop-filter:blur(15px);
+
+}
+
+
+
+
+.card{
+
+transition:.3s;
+
+}
+
+
+
+.card:hover{
+
+transform:translateY(-5px);
+
+}
+
+
+
+.progress{
+
+height:10px;
+background:rgba(255,255,255,.15);
+border-radius:20px;
+overflow:hidden;
+
+}
+
+
+
+.progress div{
+
+height:100%;
+background:#00ff99;
+
+}
+
+
+
+</style>
+
+</head>
+
+
+
+<body>
+
+
+<div class="light green"></div>
+
+<div class="light blue"></div>
+
+
+
+
+
+<header class="glass p-5 flex justify-between items-center">
+
+
+<div>
+
+<h1 class="text-3xl font-black">
+
+Smart <span class="text-green-400">X</span>
+
+</h1>
+
+
+<p class="text-gray-400">
+
+لوحة التحكم
+
+</p>
+
+
+</div>
+
+
+
+<div id="avatar" class="text-5xl">
+
+👤
+
+</div>
+
+
+</header>
+
+
+
+
+
+
+
+
+<main class="max-w-6xl mx-auto p-5">
+
+
+
+
+
+<section class="glass rounded-3xl p-6 mt-5">
+
+
+<div class="flex items-center gap-5">
+
+
+<div id="avatarBig" class="text-6xl">
+
+👤
+
+</div>
+
+
+
+<div>
+
+<h2 id="username" class="text-2xl font-bold">
+
+مرحبًا بك 👋
+
+</h2>
+
+
+<p id="membership" class="text-yellow-400">
+
+عضوية ذهبية ⭐
+
+</p>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+<div class="mt-6">
+
+
+<div class="flex justify-between text-sm">
+
+<span>
+
+المستوى القادم
+
+</span>
+
+
+<span id="percent">
+
+0%
+
+</span>
+
+
+</div>
+
+
+
+<div class="progress mt-2">
+
+<div id="levelBar" style="width:0%"></div>
+
+</div>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+
+
+
+<div class="glass rounded-3xl p-5 text-center card">
+
+💰
+
+<p class="text-gray-400 mt-2">
+
+الرصيد
+
+</p>
+
+
+<h3 id="balance" class="text-3xl font-black">
+
+0 $
+
+</h3>
+
+
+</div>
+
+
+
+
+
+<div class="glass rounded-3xl p-5 text-center card">
+
+
+⭐
+
+
+<p class="text-gray-400 mt-2">
+
+النقاط
+
+</p>
+
+
+<h3 id="points" class="text-3xl font-black">
+
+0
+
+</h3>
+
+
+</div>
+
+
+
+
+
+<div class="glass rounded-3xl p-5 text-center card">
+
+
+👥
+
+
+<p class="text-gray-400 mt-2">
+
+الدعوات
+
+</p>
+
+
+<h3 id="invites" class="text-3xl font-black">
+
+0
+
+</h3>
+
+
+</div>
+
+
+
+
+
+<div class="glass rounded-3xl p-5 text-center card">
+
+
+🎁
+
+
+<p class="text-gray-400 mt-2">
+
+المكافآت
+
+</p>
+
+
+<h3 id="rewards" class="text-3xl font-black">
+
+0
+
+</h3>
+
+
+</div>
+
+
+
+
+</section>
+
+<section class="glass rounded-3xl p-6 mt-6">
+
+
+<div class="flex justify-between items-center mb-5">
+
+
+<h2 class="text-2xl font-bold">
+
+📈 نشاط الحساب
+
+</h2>
+
+
+<span class="text-green-400">
+
+● مباشر
+
+</span>
+
+
+</div>
+
+
+
+<canvas id="chart"></canvas>
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- المهام -->
+
+<section class="mt-6">
+
+
+<h2 class="text-2xl font-bold mb-4">
+
+🎯 مهام اليوم
+
+</h2>
+
+
+
+
+<div class="glass rounded-3xl p-5 mb-4 flex justify-between items-center">
+
+
+<div>
+
+<h3 class="font-bold">
+
+تسجيل الدخول اليومي
+
+</h3>
+
+
+<p class="text-gray-400">
+
++5 نقاط يوميًا
+
+</p>
+
+
+</div>
+
+
+<button id="loginTask"
+
+class="bg-green-500 text-black px-4 py-2 rounded-xl">
+
+استلام
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="glass rounded-3xl p-5 mb-4 flex justify-between items-center">
+
+
+<div>
+
+<h3 class="font-bold">
+
+إكمال الملف الشخصي
+
+</h3>
+
+
+<p class="text-gray-400">
+
++50 نقطة
+
+</p>
+
+
+</div>
+
+
+<button id="profileTask"
+
+class="bg-green-500 text-black px-4 py-2 rounded-xl">
+
+استلام
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="glass rounded-3xl p-5 mb-4 flex justify-between items-center">
+
+
+<div>
+
+<h3 class="font-bold">
+
+دعوة عضو جديد
+
+</h3>
+
+
+<p class="text-gray-400">
+
++100 نقطة لكل دعوة حقيقية
+
+</p>
+
+
+</div>
+
+
+<button id="inviteTask"
+
+class="bg-gray-500 text-white px-4 py-2 rounded-xl">
+
+غير متاح
+
+</button>
+
+
+</div>
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- الدعوات -->
+
+
+<section class="glass rounded-3xl p-6 mt-6">
+
+
+<h2 class="text-2xl font-bold">
+
+👥 برنامج الدعوات
+
+</h2>
+
+
+
+<p class="text-gray-400 mt-3">
+
+شارك رابطك مع الآخرين
+
+</p>
+
+
+
+
+<div id="inviteCode"
+
+class="bg-black/30 rounded-xl p-4 mt-5 text-center">
+
+جاري التحميل...
+
+</div>
+
+
+
+
+<button id="copyBtn"
+
+class="w-full bg-blue-500 p-3 rounded-xl mt-4 font-bold">
+
+نسخ رابط الدعوة
+
+</button>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- الأمان -->
+
+
+<section class="glass rounded-3xl p-6 mt-6">
+
+
+<h2 class="text-2xl font-bold mb-4">
+
+🛡️ مركز الأمان
+
+</h2>
+
+
+
+<p>
+
+✅ الحساب نشط
+
+</p>
+
+
+<p class="mt-3">
+
+✅ البريد مفعل
+
+</p>
+
+
+<p class="mt-3">
+
+🔐 حماية الحساب مفعلة
+
+</p>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- النشاط -->
+
+
+<section class="glass rounded-3xl p-6 mt-6">
+
+
+<h2 class="text-2xl font-bold mb-4">
+
+🔔 آخر النشاطات
+
+</h2>
+
+
+<div id="activities">
+
+
+<p>
+🟢 تم فتح الحساب
+</p>
+
+
+<p>
+⭐ متابعة النقاط
+</p>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+</main>
+
+
+
+
+
+
+
+<nav class="fixed bottom-0 left-0 right-0 glass p-3 flex justify-around text-center">
+
+
+<div>
+
+🏠
+
+<br>
+
+الرئيسية
+
+</div>
+
+
+<div>
+
+🎯
+
+<br>
+
+المهام
+
+</div>
+
+
+<div>
+
+👥
+
+<br>
+
+الدعوات
+
+</div>
+
+
+<div>
+
+👤
+
+<br>
+
+الحساب
+
+</div>
+
+
+</nav>
+
+<script type="module">
+
+
+import {auth,db} from "./firebase.js";
+
+
+import {
+
+onAuthStateChanged
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+
+import {
+
+doc,
+getDoc,
+updateDoc,
+increment,
+setDoc
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+
+
+let uid="";
+
+let userRef;
+
+let userData={};
+
+
+
+
+
+
+
+onAuthStateChanged(auth,async(user)=>{
+
+
+if(!user){
+
+location.href="login.html";
+
+return;
+
+}
+
+
+
+uid=user.uid;
+
+
+userRef=doc(db,"users",uid);
+
+
+
+let snap=await getDoc(userRef);
+
+
+
+if(!snap.exists()){
+
+return;
+
+}
+
+
+
+userData=snap.data();
+
+
+
+
+
+// إنشاء tasks إذا لم تكن موجودة
+
+
+if(!userData.tasks){
+
+
+await setDoc(
+
+userRef,
+
+{
+
+tasks:{}
+
+},
+
+{merge:true}
+
+);
+
+
+userData.tasks={};
+
+
+}
+
+
+
+
+
+// عرض البيانات
+
+
+document.getElementById("username").innerHTML=
+
+"مرحبًا "+(userData.name || "بك")+" 👋";
+
+
+
+document.getElementById("balance").innerHTML=
+
+(userData.balance || 0)+" $";
+
+
+
+document.getElementById("points").innerHTML=
+
+userData.points || 0;
+
+
+
+document.getElementById("invites").innerHTML=
+
+userData.invites || 0;
+
+
+
+document.getElementById("rewards").innerHTML=
+
+userData.rewards || 0;
+
+
+
+
+if(userData.photoURL){
+
+
+document.getElementById("avatar").innerHTML=
+
+userData.photoURL;
+
+
+document.getElementById("avatarBig").innerHTML=
+
+userData.photoURL;
+
+
+}
+
+
+
+
+
+// المستوى
+
+
+let p=userData.points || 0;
+
+
+let percent=Math.min(
+
+(p/20000)*100,
+
+100
+
+);
+
+
+
+document.getElementById("levelBar").style.width=
+
+percent+"%";
+
+
+
+document.getElementById("percent").innerHTML=
+
+Math.floor(percent)+"%";
+
+
+
+
+
+
+// رابط الدعوة
+
+
+document.getElementById("inviteCode").innerHTML=
+
+userData.invitecode || "لا يوجد";
+
+
+
+
+
+
+// فحص حالة المهام
+
+
+checkTasks();
+
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+// فحص المهام
+
+
+function checkTasks(){
+
+
+let tasks=userData.tasks || {};
+
+
+
+
+
+// تسجيل الدخول
+
+
+let today=new Date()
+
+.toISOString()
+
+.split("T")[0];
+
+
+
+
+if(tasks.login==today){
+
+
+doneButton("loginTask");
+
+
+}
+
+
+
+
+
+
+// الملف الشخصي
+
+
+if(tasks.profile===true){
+
+
+doneButton("profileTask");
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+function doneButton(id){
+
+
+let btn=document.getElementById(id);
+
+
+if(btn){
+
+
+btn.innerHTML="✅ مكتملة";
+
+
+btn.disabled=true;
+
+
+btn.classList.remove("bg-green-500");
+
+
+btn.classList.add("bg-gray-500");
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+
+
+// مهمة تسجيل الدخول
+
+
+document.getElementById("loginTask")
+
+.onclick=async()=>{
+
+
+let today=new Date()
+
+.toISOString()
+
+.split("T")[0];
+
+
+
+if(userData.tasks?.login==today){
+
+
+alert("تم استلام مكافأة اليوم مسبقًا");
+
+return;
+
+
+}
+
+
+
+
+await updateDoc(
+
+userRef,
+
+{
+
+points:increment(5),
+
+["tasks.login"]:today
+
+}
+
+);
+
+
+
+alert("تمت إضافة 5 نقاط ⭐");
+
+
+location.reload();
+
+
+};
+
+
+
+
+
+
+
+
+
+// مهمة الملف الشخصي
+
+
+document.getElementById("profileTask")
+
+.onclick=async()=>{
+
+
+if(userData.tasks?.profile===true){
+
+
+alert("تم استلام هذه المكافأة سابقًا");
+
+return;
+
+
+}
+
+
+
+
+await updateDoc(
+
+userRef,
+
+{
+
+points:increment(50),
+
+["tasks.profile"]:true
+
+}
+
+);
+
+
+
+alert("تمت إضافة 50 نقطة ⭐");
+
+
+location.reload();
+
+
+};
+
+
+
+
+
+
+
+
+
+// نسخ رابط الدعوة
+
+
+document.getElementById("copyBtn")
+
+.onclick=()=>{
+
+
+let code=userData.invitecode || "";
+
+
+navigator.clipboard.writeText(
+
+window.location.origin+
+
+"/register.html?ref="+code
+
+);
+
+
+
+alert("تم نسخ رابط الدعوة");
+
+
+};
+
+
+
+
+
+
+
+
+
+// الرسم البياني
+
+
+const ctx=document.getElementById("chart");
+
+
+
+new Chart(ctx,{
+
+
+type:"line",
+
+
+data:{
+
+
+labels:[
+
+"1",
+
+"2",
+
+"3",
+
+"4",
+
+"5",
+
+"6",
+
+"7"
+
+],
+
+
+datasets:[{
+
+
+data:[20,45,35,70,55,90,80],
+
+
+borderColor:"#00ff99",
+
+
+backgroundColor:"rgba(0,255,150,.15)",
+
+
+fill:true,
+
+
+tension:.4
+
+
+}]
+
+
+},
+
+
+
+options:{
+
+
+plugins:{
+
+
+legend:{
+
+
+display:false
+
+
+}
+
+
+}
+
+
+
+}
+
+
+
+});
+
+
+
+</script>
+
+
+</body>
+
+</html>
